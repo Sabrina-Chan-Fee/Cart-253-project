@@ -7,17 +7,27 @@
 
 "use strict";
 
+let holeSize = 180;
+
 /**
  * OH LOOK I DIDN'T DESCRIBE SETUP!!
 */
 function setup() {
-
+    createCanvas(480, 480);
 }
 
 
 /**
- * OOPS I DIDN'T DESCRIBE WHAT MY DRAW DOES!
-*/
+draw hole in a piece of chees*/
 function draw() {
 
+    background(255, 255, 0);
+
+    //chees
+    push();
+    noStroke();
+
+    fill(0);
+    ellipse(140, 175, holeSize);
+    pop();
 }
