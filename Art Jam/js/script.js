@@ -2,13 +2,22 @@
  * Mixing Cake batter
  * By Sabrina Chan Fee
  * 
- * mix the cake batter in the bowl till it's ready to be baked!
+ * A game where the player addes the ingredients and mixes the cake batter in the bowl!
+ * 
+ * Controls: 
+ * - drag and drop ingredients into the bowl
+ * - circulate mouse in bowl to mix everything togther
+ * 
+ * Uses:
+ * p5.js
+ * https://p5js.org
  */
 
 "use strict";
 
-//canvas size
+//canvas 
 const canvas = {
+    //size
     weight: 600,
     height: 600,
 };
@@ -18,13 +27,11 @@ const mixingBowl = {
     x: canvas.weight / 3,
     y: canvas.height / 3,
 
-
     //size
     size: 300,
 
     // color
     color: "#ff0000",
-
 };
 
 //cake batter
@@ -41,22 +48,11 @@ const cakeBatter = {
         r: 180,
         g: 150,
         b: 120,
-
-        //min value for color of batter
-        // minR: 0,
-        // minG: 0,
-        // minB: 0,
-
-        //Max value for color of batter  61, 43, 31
-        maxR: 61,
-        maxG: 43,
-        maxB: 31,
     },
-
-    cakeBatterIsReady: false,
 
 };
 
+//Ingredient: Strawberry
 const Strawberry = {
     //position
     x: 100,
@@ -72,10 +68,13 @@ const Strawberry = {
         b: 203,
     },
 
+    //to make strawberry appear/disappear
     visible: true,
+    //to check if object can be dragged
     dragging: false,
 };
 
+//Ingredient: Chocolate
 const Chocolate = {
     //position
     x: 300,
@@ -91,10 +90,13 @@ const Chocolate = {
         b: 33,
     },
 
+    //to make strawberry appear/disappear
     visible: true,
+    //to check if object can be dragged
     dragging: false,
 };
 
+//Ingredient: Flour
 const Flour = {
     //position
     x: 500,
@@ -110,7 +112,9 @@ const Flour = {
         b: 215,
     },
 
+    //to make strawberry appear/disappear
     visible: true,
+    //to check if object can be dragged
     dragging: false,
 
 };
@@ -121,27 +125,28 @@ const Flour = {
 //create the canvas
 function setup() {
     createCanvas(canvas.weight, canvas.height);
-    // createCanvas(weight, height);
-
 }
 
 /**
- * Fills the background, displays the bowl 
+ * Fills the background, displays the bowl, cake batter, ingredient ( strawberry, chocolat, flour)
  */
 function draw() {
+    //color the background
     background(255, 200, 127);
 
-    checkMixingMouse();
+
+    //mixing cake batter with the mouse to change color
+    mixingCakeBatterWithMouse();
+    //when player adds a new ingredient the cake batter will change color
     changeBatterColorWhenAddIngredientsToCakeBatter();
+
+    //draw the bowl with the cake batter inside
     drawMixingBowl();
-
-
-
     drawCakeBatter();
 
-    //ingredients
-
-    if (Strawberry.dragging) {// if strawberry is being dragged change it's location to mouse's location
+    //ingredients (strawberry, chocolat, flour)
+    // Strawberry
+    if (Strawberry.dragging) {// if strawberry is being clicked change it's location to mouse's location, so user can drag it to the bowl
         Strawberry.x = mouseX;
         Strawberry.y = mouseY;
     }
@@ -149,7 +154,8 @@ function draw() {
         drawStrawberry();
     }
 
-    if (Chocolate.dragging) {// if Chocolate is being dragged change it's location to mouse's location
+    // Chocolate
+    if (Chocolate.dragging) {// if Chocolate is being clicked change it's location to mouse's location, so user can drag it to the bowl
         Chocolate.x = mouseX;
         Chocolate.y = mouseY;
     }
@@ -157,8 +163,8 @@ function draw() {
         drawChocolate();
     }
 
-
-    if (Flour.dragging) {// if Flour is being dragged change it's location to mouse's location
+    // Flour
+    if (Flour.dragging) {// if Flour is being clicked change it's location to mouse's location, so user can drag it to the bowl
         Flour.x = mouseX;
         Flour.y = mouseY;
     }
@@ -167,110 +173,137 @@ function draw() {
     }
 }
 
-function checkMixingMouse() {
+/**
+ * Change to various cake batter color while user has added all the ingredients and is mixing the bowl
+ */
+function mixingCakeBatterWithMouse() {
 
-    //if the cake batter is the right shade of brown stop
-    if (cakeBatter.cakeBatterIsReady) {
-        return;
-    }
     //distance between the mouse and the center of the cake batter
     const distanceMouseToCake = dist(mouseX, mouseY, cakeBatter.x, cakeBatter.y);
-    //size of creature is in diameter so we divide by 2
+    //see when mouse is considered overlapping
     const mouseOverlapsCakeBatter = (distanceMouseToCake < cakeBatter.size / 2);
     //check if teh mouse is movign continuously 
     const mouseIsMoving = (movedX !== 0 || movedY !== 0);
 
-    //if the mouse is "mixing" the batter change color
+    //if the mouse is moving in the bowl and all the ingredients have been added then change color
     if (mouseOverlapsCakeBatter && mouseIsMoving && !Strawberry.visible && !Chocolate.visible && !Flour.visible) {
-
 
         //change color of batter when mixed
         cakeBatter.color.r = map(mouseX, 0, canvas.weight, 0, 250);
         cakeBatter.color.g = map(mouseY, 0, canvas.height, 0, 250);
         cakeBatter.color.b = map(mouseY, 0, canvas.weight, 0, 25);
 
-        // cakeBatter.color.r = constrain(cakeBatter.color.r, cakeBatter.color.maxR);
-
-        //contraint the RGB color of cake batter so it stays at brown
-        // if (cakeBatter.color.r == cakeBatter.color.maxR || cakeBatter.color.g == cakeBatter.color.maxG || cakeBatter.color.b == cakeBatter.color.maxB) {
-        //     cakeBatter.cakeBatterIsReady = true;
-        // }
     }
 
 }
 
+/**
+ * Check to see if mouse is overlaping with ingredient
+ */
 function mousePressed() {
+    // Strawberry
 
+    //distance between the mouse and the center of the Strawberry
     const distanceStrawberry = dist(mouseX, mouseY, Strawberry.x, Strawberry.y);
+    //see when mouse is considered overlapping
     const mouseOverlapStrawberry = (distanceStrawberry < Strawberry.size / 2);
     if (mouseOverlapStrawberry) {
-        console.log("strawbery");//not going in
+        // if mouse is overlaping with ingredient change dragging to true so that user can move it to the bowl
         Strawberry.dragging = true;
     }
 
+    // Chocolate
+
+    //distance between the mouse and the center of the Chocolate
     const distanceChocolate = dist(mouseX, mouseY, Chocolate.x, Chocolate.y);
+    //see when mouse is considered overlapping
     const mouseOverlapChocolate = (distanceChocolate < Chocolate.size / 2);
     if (mouseOverlapChocolate) {
+        // if mouse is overlaping with ingredient change dragging to true so that user can move it to the bowl
         Chocolate.dragging = true;
     }
 
+    // Flour
+
+    //distance between the mouse and the center of the Flour
     const distanceFlour = dist(mouseX, mouseY, Flour.x, Flour.y);
+    //see when mouse is considered overlapping
     const mouseOverlapFlour = (distanceFlour < Flour.size / 2);
     if (mouseOverlapFlour) {
+        // if mouse is overlaping with ingredient change dragging to true so that user can move it to the bowl
         Flour.dragging = true;
     }
 
 }
 
+/**
+ * Check to see if ingredient is overlaping with the bowl. once it is and dropped inside the bowl make ingredient invisble
+ * create illussion that the ingredient was added to the bowl
+ */
 function mouseReleased() {
-    Strawberry.dragging = false;
-    //distance between the mouse and the center of the cake batter
+
+    // Strawberry
+    Strawberry.dragging = false;//stop use from dragging once they release the mouse
+
+    //Check to see if user is dropping the ingredient inside the bowl
+    //distance between the Strawberry and the center of the cake batter
     const distanceStrawberryToCake = dist(Strawberry.x, Strawberry.y, cakeBatter.x, cakeBatter.y);
-    //size of creature is in diameter so we divide by 2
+    //see when ingredient is considered overlapping with the bowl
     const strawberryOverlapsCakeBatter = (distanceStrawberryToCake < cakeBatter.size / 2);
-    //check if teh mouse is movign continuously 
+    //If ingredient is inside bowl make ingredient invisible
     if (strawberryOverlapsCakeBatter)
         Strawberry.visible = false;
     else
         Strawberry.visible = true;
 
-    Chocolate.dragging = false;
-    //distance between the mouse and the center of the cake batter
+
+
+    // Chocolate
+    Chocolate.dragging = false;//stop use from dragging once they release the mouse
+
+    //Check to see if user is dropping the ingredient inside the bowl
+    //distance between the Chocolate and the center of the cake batter
     const distanceChocolateToCake = dist(Chocolate.x, Chocolate.y, cakeBatter.x, cakeBatter.y);
-    //size of creature is in diameter so we divide by 2
+    //see when ingredient is considered overlapping with the bowl
     const chocolateOverlapsCakeBatter = (distanceChocolateToCake < cakeBatter.size / 2);
-    //check if teh mouse is movign continuously 
+    //If ingredient is inside bowl make ingredient invisible
     if (chocolateOverlapsCakeBatter)
         Chocolate.visible = false;
     else
         Chocolate.visible = true;
 
+    // Flour
+    Flour.dragging = false;//stop use from dragging once they release the mouse
 
-    Flour.dragging = false;
-    //distance between the mouse and the center of the cake batter
+    //Check to see if user is dropping the ingredient inside the bowl
+    //distance between the Flour and the center of the cake batter
     const distanceFlourToCake = dist(Flour.x, Flour.y, cakeBatter.x, cakeBatter.y);
-    //size of creature is in diameter so we divide by 2
+    //see when ingredient is considered overlapping with the bowl
     const flourOverlapsCakeBatter = (distanceFlourToCake < cakeBatter.size / 2);
-    //check if teh mouse is movign continuously 
+    //If ingredient is inside bowl make ingredient invisible
     if (flourOverlapsCakeBatter)
         Flour.visible = false;
     else
         Flour.visible = true;
 }
 
+/**
+ * Change color of the cake batter depending on what ingredient was added
+ */
 function changeBatterColorWhenAddIngredientsToCakeBatter() {
+    //When strawberry is added combine RGB color average of both batter and ingredient
     if (Strawberry.visible == false) {
         cakeBatter.color.r = (cakeBatter.color.r + Strawberry.color.r) / 2;
         cakeBatter.color.g = (cakeBatter.color.g + Strawberry.color.g) / 2;
         cakeBatter.color.b = (cakeBatter.color.b + Strawberry.color.b) / 2;
     }
-
+    //When Chocolate is added combine RGB color average of both batter and ingredient
     if (Chocolate.visible == false) {
         cakeBatter.color.r = (cakeBatter.color.r + Chocolate.color.r) / 2;
         cakeBatter.color.g = (cakeBatter.color.g + Chocolate.color.g) / 2;
         cakeBatter.color.b = (cakeBatter.color.b + Chocolate.color.b) / 2;
     }
-
+    //When Flour is added combine RGB color average of both batter and ingredient
     if (Flour.visible == false) {
         cakeBatter.color.r = (cakeBatter.color.r + Flour.color.r) / 2;
         cakeBatter.color.g = (cakeBatter.color.g + Flour.color.g) / 2;
@@ -278,6 +311,9 @@ function changeBatterColorWhenAddIngredientsToCakeBatter() {
     }
 }
 
+/**
+ * Draw a mixing bowl
+ */
 function drawMixingBowl() {
     push();
     noStroke();
@@ -286,7 +322,9 @@ function drawMixingBowl() {
     pop();
 
 }
-
+/**
+ * Draw a cake batter
+ */
 function drawCakeBatter() {
     push();
     noStroke();
@@ -295,7 +333,9 @@ function drawCakeBatter() {
     pop();
 }
 
-
+/**
+ * Draw a Strawberryl
+ */
 function drawStrawberry() {
     push();
     noStroke();
@@ -303,7 +343,9 @@ function drawStrawberry() {
     ellipse(Strawberry.x, Strawberry.y, Strawberry.size);
     pop();
 }
-
+/**
+ * Draw a Chocolate
+ */
 function drawChocolate() {
     push();
     noStroke();
@@ -311,7 +353,9 @@ function drawChocolate() {
     ellipse(Chocolate.x, Chocolate.y, Chocolate.size);
     pop();
 }
-
+/**
+ * Draw a Flour
+ */
 function drawFlour() {
     push();
     noStroke();

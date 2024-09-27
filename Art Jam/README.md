@@ -1,3 +1,10 @@
-# Template p5 project
+# Mixing Cake Batter
+Sabrina Chan Fee
 
-This is the README file for the entire project. For more official projects you should write information here about the nature of the project, your name, any special explanations of how the project works, etc.
+## [View the project online](URL_TO_THE_PROJECT)
+
+## Description
+This is a cake making game. Users have to put all of the ingreddient inside the bowl and mix it to make a cake batter!
+
+## Credits
+This project uses [p5.js](https://p5js.org).
