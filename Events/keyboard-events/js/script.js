@@ -20,8 +20,14 @@ const ball = {
     fills: {
         white: "#ffffff",
         red: "#ff0000",
-        blue: "#0000ff"
+        blue: "#0000ff",
+    },
+    //keys to controle the color
+    keys: {
+        redKey: 82,//R,r
+        blueKey: 66,//B,b
     }
+
 }
 
 /**
@@ -43,4 +49,16 @@ function draw() {
     fill(ball.fill);
     ellipse(ball.x, ball.y, ball.size);
     pop();
+}
+//draw the wholes color
+function keyPressed(event) {
+    if (event.keyCode == ball.keys.redKey)
+        ball.fill = ball.fills.red;
+    else if (event.keyCode == ball.keys.blueKey)
+        ball.fill = ball.fills.blue;
+}
+//reset the ball color
+function keyReleased(event) {
+    if (event.keyCode == ball.keys.redKey || event.keyCode == ball.keys.blueKey)
+        ball.fill = ball.fills.white;
 }
