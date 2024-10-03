@@ -127,3 +127,75 @@ function setup() {
     createCanvas(canvas.weight, canvas.height);
 }
 
+/**
+ * Fills the background, displays the bowl, cake batter, ingredient ( strawberry, chocolat, flour)
+ */
+function draw() {
+    //color the background
+    background(255, 200, 127);
+
+
+
+    drawStrawberry();
+
+    drawChocolate();
+
+
+    drawFlour();
+
+}
+
+
+
+/**
+ * Draw a mixing bowl
+ */
+function drawMixingBowl() {
+    push();
+    noStroke();
+    fill(mixingBowl.color);
+    ellipse(mixingBowl.x, mixingBowl.y, mixingBowl.size);
+    pop();
+
+}
+/**
+ * Draw a cake batter
+ */
+function drawCakeBatter() {
+    push();
+    noStroke();
+    fill(cakeBatter.color.r, cakeBatter.color.g, cakeBatter.color.b);
+    ellipse(cakeBatter.x, cakeBatter.y, cakeBatter.size);
+    pop();
+}
+
+/**
+ * Draw a Strawberryl
+ */
+function drawStrawberry() {
+    push();
+    noStroke();
+    fill(Strawberry.color.r, Strawberry.color.g, Strawberry.color.b);
+    ellipse(Strawberry.x, Strawberry.y, Strawberry.size);
+    pop();
+}
+/**
+ * Draw a Chocolate
+ */
+function drawChocolate() {
+    push();
+    noStroke();
+    fill(Chocolate.color.r, Chocolate.color.g, Chocolate.color.b);
+    ellipse(Chocolate.x, Chocolate.y, Chocolate.size);
+    pop();
+}
+/**
+ * Draw a Flour
+ */
+function drawFlour() {
+    push();
+    noStroke();
+    fill(Flour.color.r, Flour.color.g, Flour.color.b);
+    ellipse(Flour.x, Flour.y, Flour.size);
+    pop();
+}
