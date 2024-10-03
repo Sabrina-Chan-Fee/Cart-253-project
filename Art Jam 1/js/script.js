@@ -134,6 +134,10 @@ function draw() {
     //color the background
     background(255, 200, 127);
 
+    //mixing cake batter with the mouse to change color
+    mixingCakeBatterWithMouse();
+    //when player adds a new ingredient the cake batter will change color
+    changeBatterColorWhenAddIngredientsToCakeBatter();
 
 
     //draw the bowl with the cake batter inside
@@ -206,6 +210,29 @@ function mousePressed() {
     if (mouseOverlapFlour) {
         // if mouse is overlaping with ingredient change dragging to true so that user can move it to the bowl
         Flour.dragging = true;
+    }
+
+}
+/**
+ * Change to various cake batter color while user has added all the ingredients and is mixing the bowl
+ */
+function mixingCakeBatterWithMouse() {
+
+    //distance between the mouse and the center of the cake batter
+    const distanceMouseToCake = dist(mouseX, mouseY, cakeBatter.x, cakeBatter.y);
+    //see when mouse is considered overlapping
+    const mouseOverlapsCakeBatter = (distanceMouseToCake < cakeBatter.size / 2);
+    //check if teh mouse is movign continuously 
+    const mouseIsMoving = (movedX !== 0 || movedY !== 0);
+
+    //if the mouse is moving in the bowl and all the ingredients have been added then change color
+    if (mouseOverlapsCakeBatter && mouseIsMoving && !Strawberry.visible && !Chocolate.visible && !Flour.visible) {
+
+        //change color of batter when mixed
+        cakeBatter.color.r = map(mouseX, 0, canvas.weight, 0, 250);
+        cakeBatter.color.g = map(mouseY, 0, canvas.height, 0, 250);
+        cakeBatter.color.b = map(mouseY, 0, canvas.weight, 0, 25);
+
     }
 
 }
