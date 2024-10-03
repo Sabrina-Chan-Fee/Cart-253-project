@@ -259,7 +259,29 @@ function mouseReleased() {
     else
         Flour.visible = true;
 }
-
+/**
+ * Change color of the cake batter depending on what ingredient was added
+ */
+function changeBatterColorWhenAddIngredientsToCakeBatter() {
+    //When strawberry is added combine RGB color average of both batter and ingredient
+    if (Strawberry.visible == false) {
+        cakeBatter.color.r = (cakeBatter.color.r + Strawberry.color.r) / 2;
+        cakeBatter.color.g = (cakeBatter.color.g + Strawberry.color.g) / 2;
+        cakeBatter.color.b = (cakeBatter.color.b + Strawberry.color.b) / 2;
+    }
+    //When Chocolate is added combine RGB color average of both batter and ingredient
+    if (Chocolate.visible == false) {
+        cakeBatter.color.r = (cakeBatter.color.r + Chocolate.color.r) / 2;
+        cakeBatter.color.g = (cakeBatter.color.g + Chocolate.color.g) / 2;
+        cakeBatter.color.b = (cakeBatter.color.b + Chocolate.color.b) / 2;
+    }
+    //When Flour is added combine RGB color average of both batter and ingredient
+    if (Flour.visible == false) {
+        cakeBatter.color.r = (cakeBatter.color.r + Flour.color.r) / 2;
+        cakeBatter.color.g = (cakeBatter.color.g + Flour.color.g) / 2;
+        cakeBatter.color.b = (cakeBatter.color.b + Flour.color.b) / 2;
+    }
+}
 /**
  * Draw a mixing bowl
  */
