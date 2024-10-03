@@ -146,6 +146,44 @@ function draw() {
 }
 
 
+/**
+ * Check to see if mouse is overlaping with ingredient
+ */
+function mousePressed() {
+    // Strawberry
+
+    //distance between the mouse and the center of the Strawberry
+    const distanceStrawberry = dist(mouseX, mouseY, Strawberry.x, Strawberry.y);
+    //see when mouse is considered overlapping
+    const mouseOverlapStrawberry = (distanceStrawberry < Strawberry.size / 2);
+    if (mouseOverlapStrawberry) {
+        // if mouse is overlaping with ingredient change dragging to true so that user can move it to the bowl
+        Strawberry.dragging = true;
+    }
+
+    // Chocolate
+
+    //distance between the mouse and the center of the Chocolate
+    const distanceChocolate = dist(mouseX, mouseY, Chocolate.x, Chocolate.y);
+    //see when mouse is considered overlapping
+    const mouseOverlapChocolate = (distanceChocolate < Chocolate.size / 2);
+    if (mouseOverlapChocolate) {
+        // if mouse is overlaping with ingredient change dragging to true so that user can move it to the bowl
+        Chocolate.dragging = true;
+    }
+
+    // Flour
+
+    //distance between the mouse and the center of the Flour
+    const distanceFlour = dist(mouseX, mouseY, Flour.x, Flour.y);
+    //see when mouse is considered overlapping
+    const mouseOverlapFlour = (distanceFlour < Flour.size / 2);
+    if (mouseOverlapFlour) {
+        // if mouse is overlaping with ingredient change dragging to true so that user can move it to the bowl
+        Flour.dragging = true;
+    }
+
+}
 
 /**
  * Draw a mixing bowl
