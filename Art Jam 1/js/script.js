@@ -119,9 +119,6 @@ const Flour = {
 
 };
 
-
-
-
 //create the canvas
 function setup() {
     createCanvas(canvas.weight, canvas.height);
