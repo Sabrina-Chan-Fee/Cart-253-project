@@ -209,6 +209,56 @@ function mousePressed() {
     }
 
 }
+/**
+ * Check to see if ingredient is overlaping with the bowl. once it is and dropped inside the bowl make ingredient invisble
+ * create illussion that the ingredient was added to the bowl
+ */
+function mouseReleased() {
+
+    // Strawberry
+    Strawberry.dragging = false;//stop use from dragging once they release the mouse
+
+    //Check to see if user is dropping the ingredient inside the bowl
+    //distance between the Strawberry and the center of the cake batter
+    const distanceStrawberryToCake = dist(Strawberry.x, Strawberry.y, cakeBatter.x, cakeBatter.y);
+    //see when ingredient is considered overlapping with the bowl
+    const strawberryOverlapsCakeBatter = (distanceStrawberryToCake < cakeBatter.size / 2);
+    //If ingredient is inside bowl make ingredient invisible
+    if (strawberryOverlapsCakeBatter)
+        Strawberry.visible = false;
+    else
+        Strawberry.visible = true;
+
+
+
+    // Chocolate
+    Chocolate.dragging = false;//stop use from dragging once they release the mouse
+
+    //Check to see if user is dropping the ingredient inside the bowl
+    //distance between the Chocolate and the center of the cake batter
+    const distanceChocolateToCake = dist(Chocolate.x, Chocolate.y, cakeBatter.x, cakeBatter.y);
+    //see when ingredient is considered overlapping with the bowl
+    const chocolateOverlapsCakeBatter = (distanceChocolateToCake < cakeBatter.size / 2);
+    //If ingredient is inside bowl make ingredient invisible
+    if (chocolateOverlapsCakeBatter)
+        Chocolate.visible = false;
+    else
+        Chocolate.visible = true;
+
+    // Flour
+    Flour.dragging = false;//stop use from dragging once they release the mouse
+
+    //Check to see if user is dropping the ingredient inside the bowl
+    //distance between the Flour and the center of the cake batter
+    const distanceFlourToCake = dist(Flour.x, Flour.y, cakeBatter.x, cakeBatter.y);
+    //see when ingredient is considered overlapping with the bowl
+    const flourOverlapsCakeBatter = (distanceFlourToCake < cakeBatter.size / 2);
+    //If ingredient is inside bowl make ingredient invisible
+    if (flourOverlapsCakeBatter)
+        Flour.visible = false;
+    else
+        Flour.visible = true;
+}
 
 /**
  * Draw a mixing bowl
