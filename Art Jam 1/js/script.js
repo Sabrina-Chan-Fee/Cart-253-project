@@ -136,12 +136,37 @@ function draw() {
 
 
 
-    drawStrawberry();
+    //draw the bowl with the cake batter inside
+    drawMixingBowl();
+    drawCakeBatter();
 
-    drawChocolate();
+    //ingredients (strawberry, chocolat, flour)
+    // Strawberry
+    if (Strawberry.dragging) {// if strawberry is being clicked change it's location to mouse's location, so user can drag it to the bowl
+        Strawberry.x = mouseX;
+        Strawberry.y = mouseY;
+    }
+    if (Strawberry.visible) {//if strawberry is not in the bowl stay visible
+        drawStrawberry();
+    }
 
+    // Chocolate
+    if (Chocolate.dragging) {// if Chocolate is being clicked change it's location to mouse's location, so user can drag it to the bowl
+        Chocolate.x = mouseX;
+        Chocolate.y = mouseY;
+    }
+    if (Chocolate.visible) {//if Chocolate is not in the bowl stay visible
+        drawChocolate();
+    }
 
-    drawFlour();
+    // Flour
+    if (Flour.dragging) {// if Flour is being clicked change it's location to mouse's location, so user can drag it to the bowl
+        Flour.x = mouseX;
+        Flour.y = mouseY;
+    }
+    if (Flour.visible) {//if Flour is not in the bowl stay visible
+        drawFlour();
+    }
 
 }
 
