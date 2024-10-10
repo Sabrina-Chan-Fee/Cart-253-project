@@ -35,7 +35,7 @@ const bow = {
 
 };
 
-// Our Flower
+// Flower target worth 1 point
 // Has a position, size, and speed of horizontal movement
 const flower = {
     x: 0,
@@ -44,6 +44,7 @@ const flower = {
     speed: 3
 };
 
+//flying golden disk target worth 2 point
 const goldDisk = {
     x: 0,
     y: 200, // Will be random
@@ -56,8 +57,8 @@ let score = 0;
 //current score
 let state = "title"; //can be game or title
 
-//current score
-let arrowNb = 5; //can be game or title
+//number of arrows left
+let arrowNumber = 5; //can be game or title
 
 /**
  * Creates the canvas and initializes the flower
@@ -71,11 +72,12 @@ function setup() {
 }
 
 function draw() {
-    title();
+
     if (state === "title")
         title();
-    else if (state === "game")
+    else if (state === "game" && arrowNumber != 0)
         game();
+
 }
 
 function title() {
@@ -85,13 +87,16 @@ function title() {
 
 function game() {
     background("#87ceeb");
+
     moveFlower();
-    drawFlower();
     moveBow();
     moveArrow();
-    drawBow();
+
     checkArrowFlowerOverlap();
     checkArrowDiskOverlap();
+
+    drawBow();
+    drawFlower();
     drawScore();
     drawArrowScore();
     drawGoldDisk();
@@ -185,21 +190,16 @@ function moveArrow() {
         // The arrow bounces back if it hits the top
         if (bow.arrow.y <= 0) {
             bow.arrow.state = "inbound";
+            arrowNumber--;
+            if (arrowNumber === 0) {
+                state = "title";
+            }
         }
     }
     // If the arrow is inbound, it moves down
     else if (bow.arrow.state === "inbound") {
         resetArrow();
         bow.arrow.state = "idle";
-        if (!eatenFlower)
-            arrowNb--;
-        if (!eatenGoldDisk)
-            arrowNb--;
-        // bow.arrow.y += bow.arrow.speed;
-        // // The arrow stops if it hits the bottom
-        // if (bow.arrow.y >= height) {
-
-        // }
     }
 }
 
@@ -224,9 +224,9 @@ function checkArrowFlowerOverlap() {
     // Get distance from arrow to Flower
     const d = dist(bow.arrow.x, bow.arrow.y, flower.x, flower.y);
     // Check if it's an overlap
-    const eatenFlower = (d < bow.arrow.size / 2 + flower.size / 2);
+    const hitFlower = (d < bow.arrow.size / 2 + flower.size / 2);
 
-    if (eatenFlower) {
+    if (hitFlower) {
         //increase score
         score++;
         // Reset the Flower
@@ -245,10 +245,10 @@ function checkArrowDiskOverlap() {
     const dg = dist(bow.arrow.x, bow.arrow.y, goldDisk.x, goldDisk.y);
 
     // Check if it's an overlap
-    const eatenGoldDisk = (dg < bow.arrow.size / 2 + goldDisk.size / 2);
-    console.log(eatenGoldDisk);
+    const hitGoldDisk = (dg < bow.arrow.size / 2 + goldDisk.size / 2);
+    console.log(hitGoldDisk);
     //console.log("HELLO");
-    if (eatenGoldDisk) {
+    if (hitGoldDisk) {
         //console.log("HELLO");
         //increase score
         score += 2;
@@ -287,10 +287,10 @@ function drawScore() {
 
 function drawArrowScore() {
     push();
-    textAlign(RIGHT, TOP);
+    textAlign(LEFT, TOP);
     textSize(128);
     fill("pink");
     textStyle(BOLD);
-    text(arrowNb, width, 20);
+    text(arrowNumber, 0, 20);
     pop();
 }
