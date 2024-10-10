@@ -77,7 +77,8 @@ function draw() {
         title();
     else if (state === "game" && arrowNumber != 0)
         game();
-
+    else if (state = "end")
+        end();
 }
 
 function title() {
@@ -85,10 +86,15 @@ function title() {
     text("FOnrgFrongFrong", 100, 100);
 }
 
+function end() {
+    background("pink");
+    text("END", 100, 100);
+}
+
 function game() {
     background("#87ceeb");
 
-    moveFlower();
+    moveTargets();
     moveBow();
     moveArrow();
 
@@ -102,77 +108,7 @@ function game() {
     drawGoldDisk();
 }
 
-/**
- * Moves the Flower according to its speed
- * Resets the Flower if it gets all the way to the right
- */
-function moveFlower() {
-    // Move the Flower
-    flower.x += flower.speed;
-    flower.y = 400 * noise(1000, 0.005 * frameCount + 20000);
 
-    // Move the Disk
-    goldDisk.x += goldDisk.speed;
-    goldDisk.y = 400 * noise(100, 0.005 * frameCount + 2000);
-
-    // Handle the flower going off the canvas
-    if (flower.x > width) {
-        resetFlower();
-
-    } else if (goldDisk.x > width) {
-
-        resetGoldDisk();
-    }
-}
-
-/**
- * Draws the Flower as a black circle
- */
-
-function drawGoldDisk() {
-    push();
-    noStroke();
-    fill("yellow");
-    ellipse(goldDisk.x, goldDisk.y, goldDisk.size);
-    pop();
-}
-
-function drawFlower() {
-    push();
-    noStroke();
-    fill("pink");
-    ellipse(flower.x, flower.y, flower.size);
-    pop();
-}
-
-/**
- * Resets the flower to the left with a random y
- */
-function resetFlower() {
-    flower.x = 0;
-    flower.y = 400 * noise(1000, 0.005 * frameCount + 20000);
-
-
-}
-
-/**
- * Resets the flower to the left with a random y
- */
-function resetGoldDisk() {
-
-    goldDisk.x = 0;
-    goldDisk.y = 400 * noise(1000, 0.005 * frameCount + 20000);
-}
-function resetArrow() {
-    bow.arrow.x = bow.body.x;
-    bow.arrow.y = 480;
-}
-/**
- * Moves the Bow to the mouse position on x
- */
-function moveBow() {
-    bow.body.x = mouseX;
-}
 
 /**
  * Handles moving the Arrow based on its state
@@ -191,30 +127,17 @@ function moveArrow() {
         if (bow.arrow.y <= 0) {
             bow.arrow.state = "inbound";
             arrowNumber--;
+            //set to endcard when player runs out of arrows
             if (arrowNumber === 0) {
-                state = "title";
+                state = "end";
             }
         }
     }
-    // If the arrow is inbound, it moves down
+    // If the arrow is inbound, reset arrow at the bottom
     else if (bow.arrow.state === "inbound") {
         resetArrow();
         bow.arrow.state = "idle";
     }
-}
-
-/**
- * Displays the arrow (tip and line connection) and the bow (body)
- */
-function drawBow() {
-
-    // Draw the rest of the arrow
-    push();
-    stroke("brown");
-    strokeWeight(bow.arrow.size);
-    line(bow.arrow.x, bow.arrow.y, bow.arrow.x, bow.arrow.y + 100);//arrow size of 100
-    pop();
-
 }
 
 /**
@@ -227,18 +150,17 @@ function checkArrowFlowerOverlap() {
     const hitFlower = (d < bow.arrow.size / 2 + flower.size / 2);
 
     if (hitFlower) {
-        //increase score
+        //increase score by 1
         score++;
         // Reset the Flower
         resetFlower();
-
         // Bring back the arrow
         bow.arrow.state = "inbound";
     }
 }
 
 /**
- * Handles the arrow overlapping the Flower
+ * Handles the arrow overlapping the disk
  */
 function checkArrowDiskOverlap() {
     // Get distance from arrow to Flower
@@ -246,19 +168,15 @@ function checkArrowDiskOverlap() {
 
     // Check if it's an overlap
     const hitGoldDisk = (dg < bow.arrow.size / 2 + goldDisk.size / 2);
-    console.log(hitGoldDisk);
-    //console.log("HELLO");
-    if (hitGoldDisk) {
-        //console.log("HELLO");
-        //increase score
-        score += 2;
-        // Reset the Flower
 
+    if (hitGoldDisk) {
+        //increase score by 2
+        score += 2;
+        // Reset the disk
         resetGoldDisk();
         // Bring back the arrow
         bow.arrow.state = "inbound";
     }
-
 }
 
 /**
@@ -275,6 +193,62 @@ function mousePressed() {
     }
 
 }
+
+/**
+ * Moves the Flower according to its speed
+ * Resets the Flower if it gets all the way to the right
+ */
+function moveTargets() {
+    // Move the Flower
+    flower.x += flower.speed;
+    flower.y = 400 * noise(1000, 0.005 * frameCount + 20000);
+
+    // Move the Disk
+    goldDisk.x += goldDisk.speed;
+    goldDisk.y = 400 * noise(100, 0.005 * frameCount + 2000);
+
+    // Handle the flower going off the canvas
+    if (flower.x > width) {
+        resetFlower();
+    } else if (goldDisk.x > width) {// Handle the disk going off the canvas
+        resetGoldDisk();
+    }
+}
+
+/**
+ * Resets the flower to the left 
+ */
+function resetFlower() {
+    flower.x = 0;
+    flower.y = 400 * noise(1000, 0.005 * frameCount + 20000);
+}
+
+/**
+ * Resets the golden disk to the left 
+ */
+function resetGoldDisk() {
+    goldDisk.x = 0;
+    goldDisk.y = 400 * noise(1000, 0.005 * frameCount + 20000);
+}
+
+/**
+ * Reset the arrow to the mouse position on x
+ */
+function resetArrow() {
+    bow.arrow.x = bow.body.x;
+    bow.arrow.y = 480;
+}
+
+/**
+ * Moves the arrow to the mouse position on x
+ */
+function moveBow() {
+    bow.body.x = mouseX;
+}
+
+/**
+ * Displays the score
+ */
 function drawScore() {
     push();
     textAlign(RIGHT, TOP);
@@ -285,6 +259,9 @@ function drawScore() {
     pop();
 }
 
+/**
+ * Displays the number of arrows left
+ */
 function drawArrowScore() {
     push();
     textAlign(LEFT, TOP);
@@ -293,4 +270,41 @@ function drawArrowScore() {
     textStyle(BOLD);
     text(arrowNumber, 0, 20);
     pop();
+}
+
+/**
+ * Draws the flying golden disk
+ */
+
+function drawGoldDisk() {
+    push();
+    noStroke();
+    fill("yellow");
+    ellipse(goldDisk.x, goldDisk.y, goldDisk.size);
+    pop();
+}
+
+/**
+ * Displays the target flower
+ */
+function drawFlower() {
+    push();
+    noStroke();
+    fill("pink");
+    ellipse(flower.x, flower.y, flower.size);
+    pop();
+}
+
+/**
+ * Displays the arrow (tip and line connection) and the bow (body)
+ */
+function drawBow() {
+
+    // Draw the arrow
+    push();
+    stroke("brown");
+    strokeWeight(bow.arrow.size);
+    line(bow.arrow.x, bow.arrow.y, bow.arrow.x, bow.arrow.y + 100);//arrow size of 100
+    pop();
+
 }
