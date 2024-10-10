@@ -1,12 +1,12 @@
 /**
- * Frogfrogfrog
+ * fogfrogfrog
  * Pippin Barr
  * 
- * A game of catching flies with your frog-tongue
+ * A game of catching flies with your frog-arrow
  * 
  * Instructions:
  * - Move the frog with your mouse
- * - Click to launch the tongue
+ * - Click to launch the arrow
  * - Catch flies
  * 
  * Made with p5
@@ -15,168 +15,282 @@
 
 "use strict";
 
-// Our frog
-const frog = {
-    // The frog's body has a position and size
+// Our bow
+const bow = {
+    // The bow's body has a position and size
     body: {
         x: 320,
         y: 520,
         size: 150
     },
-    // The frog's tongue has a position, size, speed, and state
-    tongue: {
+    // The bow's arrow has a position, size, speed, and state
+    arrow: {
         x: undefined,
         y: 480,
         size: 20,
         speed: 20,
-        // Determines how the tongue moves each frame
+        // Determines how the arrow moves each frame
         state: "idle" // State can be: idle, outbound, inbound
-    }
+    },
+
 };
 
-// Our fly
+// Our Flower
 // Has a position, size, and speed of horizontal movement
-const fly = {
+const flower = {
     x: 0,
     y: 200, // Will be random
     size: 10,
     speed: 3
 };
 
+const goldDisk = {
+    x: 0,
+    y: 200, // Will be random
+    size: 20,
+    speed: 1,
+};
+
+//current score
+let score = 0;
+//current score
+let state = "title"; //can be game or title
+
+//current score
+let arrowNb = 5; //can be game or title
+
 /**
- * Creates the canvas and initializes the fly
+ * Creates the canvas and initializes the flower
  */
 function setup() {
     createCanvas(640, 480);
 
-    // Give the fly its first random position
-    resetFly();
+    // Give the flower its first random position
+    resetFlower();
+    resetGoldDisk();
 }
 
 function draw() {
+    title();
+    if (state === "title")
+        title();
+    else if (state === "game")
+        game();
+}
+
+function title() {
+    background("pink");
+    text("FOnrgFrongFrong", 100, 100);
+}
+
+function game() {
     background("#87ceeb");
-    moveFly();
-    drawFly();
-    moveFrog();
-    moveTongue();
-    drawFrog();
-    checkTongueFlyOverlap();
+    moveFlower();
+    drawFlower();
+    moveBow();
+    moveArrow();
+    drawBow();
+    checkArrowFlowerOverlap();
+    checkArrowDiskOverlap();
+    drawScore();
+    drawArrowScore();
+    drawGoldDisk();
 }
 
 /**
- * Moves the fly according to its speed
- * Resets the fly if it gets all the way to the right
+ * Moves the Flower according to its speed
+ * Resets the Flower if it gets all the way to the right
  */
-function moveFly() {
-    // Move the fly
-    fly.x += fly.speed;
-    // Handle the fly going off the canvas
-    if (fly.x > width) {
-        resetFly();
+function moveFlower() {
+    // Move the Flower
+    flower.x += flower.speed;
+    flower.y = 400 * noise(1000, 0.005 * frameCount + 20000);
+
+    // Move the Disk
+    goldDisk.x += goldDisk.speed;
+    goldDisk.y = 400 * noise(100, 0.005 * frameCount + 2000);
+
+    // Handle the flower going off the canvas
+    if (flower.x > width) {
+        resetFlower();
+
+    } else if (goldDisk.x > width) {
+
+        resetGoldDisk();
     }
 }
 
 /**
- * Draws the fly as a black circle
+ * Draws the Flower as a black circle
  */
-function drawFly() {
+
+function drawGoldDisk() {
     push();
     noStroke();
-    fill("#000000");
-    ellipse(fly.x, fly.y, fly.size);
+    fill("yellow");
+    ellipse(goldDisk.x, goldDisk.y, goldDisk.size);
+    pop();
+}
+
+function drawFlower() {
+    push();
+    noStroke();
+    fill("pink");
+    ellipse(flower.x, flower.y, flower.size);
     pop();
 }
 
 /**
- * Resets the fly to the left with a random y
+ * Resets the flower to the left with a random y
  */
-function resetFly() {
-    fly.x = 0;
-    fly.y = random(0, 300);
+function resetFlower() {
+    flower.x = 0;
+    flower.y = 400 * noise(1000, 0.005 * frameCount + 20000);
+
+
 }
 
 /**
- * Moves the frog to the mouse position on x
+ * Resets the flower to the left with a random y
  */
-function moveFrog() {
-    frog.body.x = mouseX;
+function resetGoldDisk() {
+
+    goldDisk.x = 0;
+    goldDisk.y = 400 * noise(1000, 0.005 * frameCount + 20000);
+}
+function resetArrow() {
+    bow.arrow.x = bow.body.x;
+    bow.arrow.y = 480;
+}
+/**
+ * Moves the Bow to the mouse position on x
+ */
+function moveBow() {
+    bow.body.x = mouseX;
 }
 
 /**
- * Handles moving the tongue based on its state
+ * Handles moving the Arrow based on its state
  */
-function moveTongue() {
-    // Tongue matches the frog's x
-    frog.tongue.x = frog.body.x;
-    // If the tongue is idle, it doesn't do anything
-    if (frog.tongue.state === "idle") {
+function moveArrow() {
+    // Arrow matches the bow's x
+    bow.arrow.x = bow.body.x;
+    // If the arrow is idle, it doesn't do anything
+    if (bow.arrow.state === "idle") {
         // Do nothing
     }
-    // If the tongue is outbound, it moves up
-    else if (frog.tongue.state === "outbound") {
-        frog.tongue.y += -frog.tongue.speed;
-        // The tongue bounces back if it hits the top
-        if (frog.tongue.y <= 0) {
-            frog.tongue.state = "inbound";
+    // move arrow up
+    else if (bow.arrow.state === "outbound") {
+        bow.arrow.y += -bow.arrow.speed;
+        // The arrow bounces back if it hits the top
+        if (bow.arrow.y <= 0) {
+            bow.arrow.state = "inbound";
         }
     }
-    // If the tongue is inbound, it moves down
-    else if (frog.tongue.state === "inbound") {
-        frog.tongue.y += frog.tongue.speed;
-        // The tongue stops if it hits the bottom
-        if (frog.tongue.y >= height) {
-            frog.tongue.state = "idle";
-        }
+    // If the arrow is inbound, it moves down
+    else if (bow.arrow.state === "inbound") {
+        resetArrow();
+        bow.arrow.state = "idle";
+        if (!eatenFlower)
+            arrowNb--;
+        if (!eatenGoldDisk)
+            arrowNb--;
+        // bow.arrow.y += bow.arrow.speed;
+        // // The arrow stops if it hits the bottom
+        // if (bow.arrow.y >= height) {
+
+        // }
     }
 }
 
 /**
- * Displays the tongue (tip and line connection) and the frog (body)
+ * Displays the arrow (tip and line connection) and the bow (body)
  */
-function drawFrog() {
-    // Draw the tongue tip
+function drawBow() {
+
+    // Draw the rest of the arrow
     push();
-    fill("#ff0000");
-    noStroke();
-    ellipse(frog.tongue.x, frog.tongue.y, frog.tongue.size);
+    stroke("brown");
+    strokeWeight(bow.arrow.size);
+    line(bow.arrow.x, bow.arrow.y, bow.arrow.x, bow.arrow.y + 100);//arrow size of 100
     pop();
 
-    // Draw the rest of the tongue
-    push();
-    stroke("#ff0000");
-    strokeWeight(frog.tongue.size);
-    line(frog.tongue.x, frog.tongue.y, frog.body.x, frog.body.y);
-    pop();
-
-    // Draw the frog's body
-    push();
-    fill("#00ff00");
-    noStroke();
-    ellipse(frog.body.x, frog.body.y, frog.body.size);
-    pop();
 }
 
 /**
- * Handles the tongue overlapping the fly
+ * Handles the arrow overlapping the flower
  */
-function checkTongueFlyOverlap() {
-    // Get distance from tongue to fly
-    const d = dist(frog.tongue.x, frog.tongue.y, fly.x, fly.y);
+function checkArrowFlowerOverlap() {
+    // Get distance from arrow to Flower
+    const d = dist(bow.arrow.x, bow.arrow.y, flower.x, flower.y);
     // Check if it's an overlap
-    const eaten = (d < frog.tongue.size/2 + fly.size/2);
-    if (eaten) {
-        // Reset the fly
-        resetFly();
-        // Bring back the tongue
-        frog.tongue.state = "inbound";
+    const eatenFlower = (d < bow.arrow.size / 2 + flower.size / 2);
+
+    if (eatenFlower) {
+        //increase score
+        score++;
+        // Reset the Flower
+        resetFlower();
+
+        // Bring back the arrow
+        bow.arrow.state = "inbound";
     }
 }
 
 /**
- * Launch the tongue on click (if it's not launched yet)
+ * Handles the arrow overlapping the Flower
+ */
+function checkArrowDiskOverlap() {
+    // Get distance from arrow to Flower
+    const dg = dist(bow.arrow.x, bow.arrow.y, goldDisk.x, goldDisk.y);
+
+    // Check if it's an overlap
+    const eatenGoldDisk = (dg < bow.arrow.size / 2 + goldDisk.size / 2);
+    console.log(eatenGoldDisk);
+    //console.log("HELLO");
+    if (eatenGoldDisk) {
+        //console.log("HELLO");
+        //increase score
+        score += 2;
+        // Reset the Flower
+
+        resetGoldDisk();
+        // Bring back the arrow
+        bow.arrow.state = "inbound";
+    }
+
+}
+
+/**
+ * Launch the arrow on click (if it's not launched yet)
  */
 function mousePressed() {
-    if (frog.tongue.state === "idle") {
-        frog.tongue.state = "outbound";
+    if (state === "title") {
+        state = "game";
     }
+    else if (state === "game") {
+        if (bow.arrow.state === "idle") {
+            bow.arrow.state = "outbound";
+        }
+    }
+
+}
+function drawScore() {
+    push();
+    textAlign(RIGHT, TOP);
+    textSize(128);
+    fill("pink");
+    textStyle(BOLD);
+    text(score, width, 20);
+    pop();
+}
+
+function drawArrowScore() {
+    push();
+    textAlign(RIGHT, TOP);
+    textSize(128);
+    fill("pink");
+    textStyle(BOLD);
+    text(arrowNb, width, 20);
+    pop();
 }
