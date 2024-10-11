@@ -1,21 +1,22 @@
 /**
- * fogfrogfrog
- * Pippin Barr
+ * fArchery game
+ * Sabrina Chan Fee
  * 
- * A game of catching flies with your frog-arrow
+ * A game of launchign arrow at flowers and flying golden disk
  * 
  * Instructions:
- * - Move the frog with your mouse
- * - Click to launch the arrow
- * - Catch flies
+ * - Move the arrow with left anf right key
+ * - Click pace bar to launch the arrow
+ * - if player misses they shot they lose an arrow. player has 5 arrow in total
  * 
  * Made with p5
  * https://p5js.org/
+ * Base template by Pipin Barr
  */
 
 "use strict";
 
-// Our bow
+//Bow
 const bow = {
     // The bow's body has a position and size
     body: {
@@ -39,26 +40,27 @@ const bow = {
 // Has a position, size, and speed of horizontal movement
 const flower = {
     x: 0,
-    y: 200, // Will be random
+    y: 200,
     size: 13,
     speed: 1
 };
 
 //flying golden disk target worth 2 point
+// Has a position, size, and speed of horizontal movement
 const goldDisk = {
     x: 0,
-    y: 200, // Will be random
+    y: 200,
     size: 15,
     speed: 0.5,
 };
 
 //current score
 let score = 0;
-//current score
-let state = "title"; //can be game or title
+//current state of the game
+let state = "title"; //can be game or title or end
 
-//number of arrows left
-let arrowNumber = 5; //can be game or title
+//number of arrows left in the game
+let arrowNumber = 5;
 
 /**
  * Creates the canvas and initializes the flower
@@ -74,6 +76,7 @@ function setup() {
  * Displays the title page
  */
 function title() {
+    //game title
     push();
     textAlign(CENTER, BASELINE);
     textSize(30);
@@ -83,12 +86,14 @@ function title() {
     text("Archery Game!", 320, 150);
     pop();
 
+    //instruction on hwo to start
     push();
     textAlign(CENTER, BASELINE);
     textSize(20);
     text("(press \"s\" to start!)", 320, 190);
     pop();
 
+    //rules display and points system
     push();
     textAlign(CENTER, BASELINE);
     textSize(20);
@@ -100,33 +105,34 @@ function title() {
  * Displays the game over message and final score
  */
 function end() {
-
     textAlign(CENTER, BASELINE);
     textSize(30);
     background("pink");
     fill("black");
     textStyle(BOLD);
     text("Game Over\n Your final score is: " + score + " !", 320, 215);
-
 }
 
+/**
+ * Displays the game open, over message and main game 
+ */
 function draw() {
 
-    if (state === "title")
+    if (state === "title")//display start game 
         title();
-    else if (state === "game" && arrowNumber != 0)
+    else if (state === "game" && arrowNumber != 0)// keep displaying game until player runs out of arrows
         game();
-    else if (state = "end")
+    else if (state = "end")//display end game message after user loses
         end();
 }
 
-
-
+/**
+ * Displays the game 
+ */
 function game() {
     background("#87ceeb");
 
     moveTargets();
-    //moveBow();
     moveArrow();
     keyPressed();
 
@@ -139,8 +145,6 @@ function game() {
     drawArrowScore();
     drawGoldDisk();
 }
-
-
 
 /**
  * Handles moving the Arrow based on its state
@@ -155,11 +159,11 @@ function moveArrow() {
     // move arrow up
     else if (bow.arrow.state === "outbound") {
         bow.arrow.y += -bow.arrow.speed;
-        // The arrow bounces back if it hits the top
+        // The arrow bounces hits the top display new arrow at the bottom
         if (bow.arrow.y <= 0) {
             bow.arrow.state = "inbound";
-            arrowNumber--;
-            //set to endcard when player runs out of arrows
+            arrowNumber--;// missed shots, player loses and arrow
+            //set to end card when player runs out of arrows
             if (arrowNumber === 0) {
                 state = "end";
             }
@@ -195,7 +199,7 @@ function checkArrowFlowerOverlap() {
  * Handles the arrow overlapping the disk
  */
 function checkArrowDiskOverlap() {
-    // Get distance from arrow to Flower
+    // Get distance from arrow to disk
     const dg = dist(bow.arrow.x, bow.arrow.y, goldDisk.x, goldDisk.y);
 
     // Check if it's an overlap
@@ -212,8 +216,8 @@ function checkArrowDiskOverlap() {
 }
 
 /**
- * Moves the Flower according to its speed
- * Resets the Flower if it gets all the way to the right
+ * Moves the Flower/disk according to its speed
+ * Resets the Flower/disk if it gets all the way to the right
  */
 function moveTargets() {
     // Move the Flower
@@ -249,15 +253,15 @@ function resetGoldDisk() {
 }
 
 /**
- * Reset the arrow to the mouse position on x
+ * Reset the arrow to bottom
  */
 function resetArrow() {
-    bow.arrow.x = bow.body.x;
+    bow.arrow.x = bow.arrow.x;
     bow.arrow.y = 460;
 }
 
 /**
- * Moves the arrow to the mouse position on x
+ * Moves the arrow with left, right arrow and space bar
  */
 function keyPressed() {
     if (state === "title" && key == "s" && keyIsPressed) {//press space bar to start the game
@@ -271,8 +275,6 @@ function keyPressed() {
         bow.arrow.state = "outbound";
     }
 }
-
-
 
 /**
  * Displays the score
