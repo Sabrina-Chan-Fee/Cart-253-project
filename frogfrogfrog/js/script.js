@@ -135,9 +135,11 @@ function game() {
 
     drawArrow();
     drawFlower();
+    drawGoldDisk();
+
     drawScore();
     drawArrowScore();
-    drawGoldDisk();
+
 }
 
 /**
