@@ -18,22 +18,17 @@
 
 //Bow
 const bow = {
-    // The bow's body has a position and size
-    body: {
-        x: 320,
-        y: 520,
-        size: 150
-    },
     // The bow's arrow has a position, size, speed, and state
     arrow: {
-        x: undefined,
+        // x: undefined,
+        x: 320,
+
         y: 460,
         size: 10,
         speed: 20,
         // Determines how the arrow moves each frame
         state: "idle" // State can be: idle, outbound, inbound
     },
-
 };
 
 // Flower target worth 1 point
@@ -151,7 +146,7 @@ function game() {
  */
 function moveArrow() {
     // Arrow matches the bow's x
-    bow.arrow.x = bow.body.x;
+    bow.arrow.x = bow.arrow.x;
     // If the arrow is idle, it doesn't do anything
     if (bow.arrow.state === "idle") {
         // Do nothing
@@ -268,9 +263,9 @@ function keyPressed() {
         state = "game";
     }
     else if (key == "ArrowLeft" && keyIsPressed)//make arrow move left when left arrow key is pressed
-        bow.body.x -= 3;
+        bow.arrow.x -= 3;
     else if (key == "ArrowRight" && keyIsPressed)//make arrow move right when right arrow key is pressed
-        bow.body.x += 3;
+        bow.arrow.x += 3;
     else if (key == " " && keyIsPressed && bow.arrow.state === "idle") {//make arrow shoot up when space bar key is pressed
         bow.arrow.state = "outbound";
     }
