@@ -74,12 +74,26 @@ function setup() {
  * Displays the title page
  */
 function title() {
+    push();
     textAlign(CENTER, BASELINE);
     textSize(30);
     background("pink");
     fill("black");
     textStyle(BOLD);
-    text("Archery Game!\nclick anywhere to start!", 320, 215);
+    text("Archery Game!", 320, 180);
+    pop();
+
+    push();
+    textAlign(CENTER, BASELINE);
+    textSize(20);
+    text("(click anywhere to start!)", 320, 220);
+    pop();
+
+    push();
+    textAlign(CENTER, BASELINE);
+    textSize(20);
+    text("\nUse arrow key to move arrow\nUse spacebar to shoot arrow\n\nPink flower: 1 point\n Golden Disk: 2 point", 320, 250);
+    pop();
 }
 
 /**
@@ -92,7 +106,7 @@ function end() {
     background("pink");
     fill("black");
     textStyle(BOLD);
-    text("Game Over\n Your final score is: " + score, 320, 215);
+    text("Game Over\n Your final score is: " + score + " !", 320, 215);
 
 }
 
@@ -274,7 +288,7 @@ function drawScore() {
     textSize(30);
     fill("black");
     textStyle(BOLD);
-    text("Score: " + score, width, 20);
+    text("Score: " + score, width - 20, 20);
     pop();
 }
 
@@ -287,7 +301,7 @@ function drawArrowScore() {
     textSize(30);
     fill("black");
     textStyle(BOLD);
-    text("Number of arrows left: " + arrowNumber, 0, 20);
+    text("Number of arrows left: " + arrowNumber, 20, 20);
     pop();
 }
 
