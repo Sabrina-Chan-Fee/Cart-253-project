@@ -48,8 +48,8 @@ const flower = {
 const goldDisk = {
     x: 0,
     y: 200, // Will be random
-    size: 13,
-    speed: 4,
+    size: 10,
+    speed: 1,
 };
 
 //current score
@@ -126,8 +126,9 @@ function game() {
     background("#87ceeb");
 
     moveTargets();
-    moveBow();
+    //moveBow();
     moveArrow();
+    keyPressed();
 
     checkArrowFlowerOverlap();
     checkArrowDiskOverlap();
@@ -211,21 +212,6 @@ function checkArrowDiskOverlap() {
 }
 
 /**
- * Launch the arrow on click (if it's not launched yet)
- */
-function mousePressed() {
-    if (state === "title") {
-        state = "game";
-    }
-    else if (state === "game") {
-        if (bow.arrow.state === "idle") {
-            bow.arrow.state = "outbound";
-        }
-    }
-
-}
-
-/**
  * Moves the Flower according to its speed
  * Resets the Flower if it gets all the way to the right
  */
@@ -273,8 +259,17 @@ function resetArrow() {
 /**
  * Moves the arrow to the mouse position on x
  */
-function moveBow() {
-    bow.body.x = mouseX;
+function keyPressed() {
+    if (state === "title" && key == "s" && keyIsPressed) {//press space bar to start the game
+        state = "game";
+    }
+    else if (key == "ArrowLeft" && keyIsPressed)//make arrow move left when left arrow key is pressed
+        bow.body.x -= 3;
+    else if (key == "ArrowRight" && keyIsPressed)//make arrow move right when right arrow key is pressed
+        bow.body.x += 3;
+    else if (key == " " && keyIsPressed && bow.arrow.state === "idle") {//make arrow shoot up when space bar key is pressed
+        bow.arrow.state = "outbound";
+    }
 }
 
 
