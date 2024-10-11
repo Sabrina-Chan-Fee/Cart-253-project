@@ -41,15 +41,15 @@ const flower = {
     x: 0,
     y: 200, // Will be random
     size: 13,
-    speed: 3
+    speed: 1
 };
 
 //flying golden disk target worth 2 point
 const goldDisk = {
     x: 0,
     y: 200, // Will be random
-    size: 10,
-    speed: 1,
+    size: 15,
+    speed: 0.5,
 };
 
 //current score
@@ -80,19 +80,19 @@ function title() {
     background("pink");
     fill("black");
     textStyle(BOLD);
-    text("Archery Game!", 320, 180);
+    text("Archery Game!", 320, 150);
     pop();
 
     push();
     textAlign(CENTER, BASELINE);
     textSize(20);
-    text("(click anywhere to start!)", 320, 220);
+    text("(press \"s\" to start!)", 320, 190);
     pop();
 
     push();
     textAlign(CENTER, BASELINE);
     textSize(20);
-    text("\nUse arrow key to move arrow\nUse spacebar to shoot arrow\n\nPink flower: 1 point\n Golden Disk: 2 point", 320, 250);
+    text("\nUse arrow key to move arrow\nUse spacebar to shoot arrow\nLose 1 arrow for every missed shot!\n\nPink flower: 1 point\n Golden Disk: 2 point", 320, 220);
     pop();
 }
 
