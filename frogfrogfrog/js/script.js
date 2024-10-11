@@ -16,19 +16,18 @@
 
 "use strict";
 
-//Bow
-const bow = {
-    // The bow's arrow has a position, size, speed, and state
-    arrow: {
-        // x: undefined,
-        x: 320,
+//Arrow
+const arrow = {
+    // The arrow has a position, size, speed, and state
 
-        y: 460,
-        size: 10,
-        speed: 20,
-        // Determines how the arrow moves each frame
-        state: "idle" // State can be: idle, outbound, inbound
-    },
+    x: 320,
+
+    y: 460,
+    size: 10,
+    speed: 20,
+    // Determines how the arrow moves each frame
+    state: "idle" // State can be: idle, outbound, inbound
+
 };
 
 // Flower target worth 1 point
@@ -134,7 +133,7 @@ function game() {
     checkArrowFlowerOverlap();
     checkArrowDiskOverlap();
 
-    drawBow();
+    drawArrow();
     drawFlower();
     drawScore();
     drawArrowScore();
@@ -145,18 +144,17 @@ function game() {
  * Handles moving the Arrow based on its state
  */
 function moveArrow() {
-    // Arrow matches the bow's x
-    bow.arrow.x = bow.arrow.x;
+
     // If the arrow is idle, it doesn't do anything
-    if (bow.arrow.state === "idle") {
+    if (arrow.state === "idle") {
         // Do nothing
     }
     // move arrow up
-    else if (bow.arrow.state === "outbound") {
-        bow.arrow.y += -bow.arrow.speed;
+    else if (arrow.state === "outbound") {
+        arrow.y += - arrow.speed;
         // The arrow bounces hits the top display new arrow at the bottom
-        if (bow.arrow.y <= 0) {
-            bow.arrow.state = "inbound";
+        if (arrow.y <= 0) {
+            arrow.state = "inbound";
             arrowNumber--;// missed shots, player loses and arrow
             //set to end card when player runs out of arrows
             if (arrowNumber === 0) {
@@ -165,9 +163,9 @@ function moveArrow() {
         }
     }
     // If the arrow is inbound, reset arrow at the bottom
-    else if (bow.arrow.state === "inbound") {
+    else if (arrow.state === "inbound") {
         resetArrow();
-        bow.arrow.state = "idle";
+        arrow.state = "idle";
     }
 }
 
@@ -176,9 +174,9 @@ function moveArrow() {
  */
 function checkArrowFlowerOverlap() {
     // Get distance from arrow to Flower
-    const d = dist(bow.arrow.x, bow.arrow.y, flower.x, flower.y);
+    const d = dist(arrow.x, arrow.y, flower.x, flower.y);
     // Check if it's an overlap
-    const hitFlower = (d < bow.arrow.size / 2 + flower.size / 2);
+    const hitFlower = (d < arrow.size / 2 + flower.size / 2);
 
     if (hitFlower) {
         //increase score by 1
@@ -186,7 +184,7 @@ function checkArrowFlowerOverlap() {
         // Reset the Flower
         resetFlower();
         // Bring back the arrow
-        bow.arrow.state = "inbound";
+        arrow.state = "inbound";
     }
 }
 
@@ -195,10 +193,10 @@ function checkArrowFlowerOverlap() {
  */
 function checkArrowDiskOverlap() {
     // Get distance from arrow to disk
-    const dg = dist(bow.arrow.x, bow.arrow.y, goldDisk.x, goldDisk.y);
+    const dg = dist(arrow.x, arrow.y, goldDisk.x, goldDisk.y);
 
     // Check if it's an overlap
-    const hitGoldDisk = (dg < bow.arrow.size / 2 + goldDisk.size / 2);
+    const hitGoldDisk = (dg < arrow.size / 2 + goldDisk.size / 2);
 
     if (hitGoldDisk) {
         //increase score by 2
@@ -206,7 +204,7 @@ function checkArrowDiskOverlap() {
         // Reset the disk
         resetGoldDisk();
         // Bring back the arrow
-        bow.arrow.state = "inbound";
+        arrow.state = "inbound";
     }
 }
 
@@ -251,8 +249,8 @@ function resetGoldDisk() {
  * Reset the arrow to bottom
  */
 function resetArrow() {
-    bow.arrow.x = bow.arrow.x;
-    bow.arrow.y = 460;
+    arrow.x = arrow.x;
+    arrow.y = 460;
 }
 
 /**
@@ -263,11 +261,11 @@ function keyPressed() {
         state = "game";
     }
     else if (key == "ArrowLeft" && keyIsPressed)//make arrow move left when left arrow key is pressed
-        bow.arrow.x -= 3;
+        arrow.x -= 3;
     else if (key == "ArrowRight" && keyIsPressed)//make arrow move right when right arrow key is pressed
-        bow.arrow.x += 3;
-    else if (key == " " && keyIsPressed && bow.arrow.state === "idle") {//make arrow shoot up when space bar key is pressed
-        bow.arrow.state = "outbound";
+        arrow.x += 3;
+    else if (key == " " && keyIsPressed && arrow.state === "idle") {//make arrow shoot up when space bar key is pressed
+        arrow.state = "outbound";
     }
 }
 
@@ -335,22 +333,22 @@ function drawFlower() {
 }
 
 /**
- * Displays the arrow (tip and line connection) and the bow (body)
+ * Displays the arrow 
  */
-function drawBow() {
+function drawArrow() {
 
     // Draw the arrow
     push();
     stroke("brown");
-    strokeWeight(bow.arrow.size);
-    line(bow.arrow.x, bow.arrow.y, bow.arrow.x, bow.arrow.y + 100);//arrow size of 100
+    strokeWeight(arrow.size);
+    line(arrow.x, arrow.y, arrow.x, arrow.y + 100);//arrow size of 100
     pop();
 
     //draw the arrow tip
     push();
     stroke("grey");
-    strokeWeight(bow.arrow.size);
-    triangle(bow.arrow.x - 5, bow.arrow.y, bow.arrow.x, bow.arrow.y - 10, bow.arrow.x + 5, bow.arrow.y,);//arrow size of 100
+    strokeWeight(arrow.size);
+    triangle(arrow.x - 5, arrow.y, arrow.x, arrow.y - 10, arrow.x + 5, arrow.y,);//arrow size of 100
     pop();
 
 }
