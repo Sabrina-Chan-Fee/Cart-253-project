@@ -70,6 +70,31 @@ function setup() {
     resetFlower();
     resetGoldDisk();
 }
+/**
+ * Displays the title page
+ */
+function title() {
+    textAlign(CENTER, BASELINE);
+    textSize(30);
+    background("pink");
+    fill("black");
+    textStyle(BOLD);
+    text("Archery Game!\nclick anywhere to start!", 320, 215);
+}
+
+/**
+ * Displays the game over message and final score
+ */
+function end() {
+
+    textAlign(CENTER, BASELINE);
+    textSize(30);
+    background("pink");
+    fill("black");
+    textStyle(BOLD);
+    text("Game Over\n Your final score is: " + score, 320, 215);
+
+}
 
 function draw() {
 
@@ -81,15 +106,7 @@ function draw() {
         end();
 }
 
-function title() {
-    background("pink");
-    text("FOnrgFrongFrong", 100, 100);
-}
 
-function end() {
-    background("pink");
-    text("END", 100, 100);
-}
 
 function game() {
     background("#87ceeb");
@@ -246,16 +263,18 @@ function moveBow() {
     bow.body.x = mouseX;
 }
 
+
+
 /**
  * Displays the score
  */
 function drawScore() {
     push();
     textAlign(RIGHT, TOP);
-    textSize(128);
-    fill("pink");
+    textSize(30);
+    fill("black");
     textStyle(BOLD);
-    text(score, width, 20);
+    text("Score: " + score, width, 20);
     pop();
 }
 
@@ -265,10 +284,10 @@ function drawScore() {
 function drawArrowScore() {
     push();
     textAlign(LEFT, TOP);
-    textSize(128);
-    fill("pink");
+    textSize(30);
+    fill("black");
     textStyle(BOLD);
-    text(arrowNumber, 0, 20);
+    text("Number of arrows left: " + arrowNumber, 0, 20);
     pop();
 }
 
