@@ -26,8 +26,8 @@ const bow = {
     // The bow's arrow has a position, size, speed, and state
     arrow: {
         x: undefined,
-        y: 480,
-        size: 20,
+        y: 460,
+        size: 10,
         speed: 20,
         // Determines how the arrow moves each frame
         state: "idle" // State can be: idle, outbound, inbound
@@ -40,7 +40,7 @@ const bow = {
 const flower = {
     x: 0,
     y: 200, // Will be random
-    size: 10,
+    size: 13,
     speed: 3
 };
 
@@ -48,8 +48,8 @@ const flower = {
 const goldDisk = {
     x: 0,
     y: 200, // Will be random
-    size: 20,
-    speed: 1,
+    size: 13,
+    speed: 4,
 };
 
 //current score
@@ -267,7 +267,7 @@ function resetGoldDisk() {
  */
 function resetArrow() {
     bow.arrow.x = bow.body.x;
-    bow.arrow.y = 480;
+    bow.arrow.y = 460;
 }
 
 /**
@@ -321,11 +321,25 @@ function drawGoldDisk() {
  * Displays the target flower
  */
 function drawFlower() {
+    //draw petal
     push();
     noStroke();
     fill("pink");
+    ellipse(flower.x + 6, flower.y + 6, flower.size);
+    ellipse(flower.x + 1, flower.y + 8, flower.size);
+    ellipse(flower.x - 1, flower.y - 6, flower.size);
+    ellipse(flower.x + 6, flower.y - 1, flower.size);
+    ellipse(flower.x - 6, flower.y + 2, flower.size);
+    pop();
+
+    //draw flower center
+    push();
+    noStroke();
+    fill("yellow");
     ellipse(flower.x, flower.y, flower.size);
     pop();
+
+
 }
 
 /**
@@ -338,6 +352,13 @@ function drawBow() {
     stroke("brown");
     strokeWeight(bow.arrow.size);
     line(bow.arrow.x, bow.arrow.y, bow.arrow.x, bow.arrow.y + 100);//arrow size of 100
+    pop();
+
+    //draw the arrow tip
+    push();
+    stroke("grey");
+    strokeWeight(bow.arrow.size);
+    triangle(bow.arrow.x - 5, bow.arrow.y, bow.arrow.x, bow.arrow.y - 10, bow.arrow.x + 5, bow.arrow.y,);//arrow size of 100
     pop();
 
 }
