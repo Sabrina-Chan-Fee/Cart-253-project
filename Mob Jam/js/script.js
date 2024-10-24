@@ -1,5 +1,5 @@
 /**
- * fArchery game
+ * Archery game
  * Sabrina Chan Fee
  * 
  * A game of launchign arrow at flowers and flying golden disk
@@ -19,9 +19,7 @@
 //Arrow
 const arrow = {
     // The arrow has a position, size, speed, and state
-
     x: 320,
-
     y: 460,
     size: 10,
     speed: 20,
@@ -62,7 +60,7 @@ let arrowNumber = 5;
 function setup() {
     createCanvas(640, 480);
 
-    // Give the flower its first random position
+    // Give the flower/disk its first random position
     resetFlower();
     resetGoldDisk();
 }
@@ -80,7 +78,7 @@ function title() {
     text("Archery Game!", 320, 150);
     pop();
 
-    //instruction on hwo to start
+    //instruction on how to start
     push();
     textAlign(CENTER, BASELINE);
     textSize(20);
@@ -157,7 +155,7 @@ function moveArrow() {
         // The arrow bounces hits the top display new arrow at the bottom
         if (arrow.y <= 0) {
             arrow.state = "inbound";
-            arrowNumber--;// missed shots, player loses and arrow
+            arrowNumber--;// missed shots, player loses an arrow
             //set to end card when player runs out of arrows
             if (arrowNumber === 0) {
                 state = "end";
@@ -194,7 +192,7 @@ function checkArrowFlowerOverlap() {
  * Handles the arrow overlapping the disk
  */
 function checkArrowDiskOverlap() {
-    // Get distance from arrow to disk
+    // Get distance from arrow to gold disk
     const dg = dist(arrow.x, arrow.y, goldDisk.x, goldDisk.y);
 
     // Check if it's an overlap
