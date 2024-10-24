@@ -4,7 +4,7 @@
 A game about shooting an arrow at flowers and a flying golden disk. 
 
 Story: 
-The local knight wants to practice learning the bow on moving targets but feels too guilt using animals as a target. 
+The local knight wants to practice learning the bow on moving targets but feels too guilt using animals as a targets. 
 So his friend suggested to use flower and their golden plates from their house as moving target practice instead.
 
 Instructions:

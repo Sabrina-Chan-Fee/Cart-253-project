@@ -25,7 +25,6 @@ const arrow = {
     speed: 20,
     // Determines how the arrow moves each frame
     state: "idle" // State can be: idle, outbound, inbound
-
 };
 
 // Flower target worth 1 point
@@ -50,7 +49,6 @@ const goldDisk = {
 let score = 0;
 //current state of the game
 let state = "title"; //can be game or title or end
-
 //number of arrows left in the game
 let arrowNumber = 5;
 
