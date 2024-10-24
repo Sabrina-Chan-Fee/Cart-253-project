@@ -8,7 +8,7 @@
 "use strict";
 
 // The bugs array (starts empty)
-let bugs;
+let bugs = [];
 
 // Time between bugs. This will get bigger.
 const minimumBugDelay = 0.5 * 1000;
@@ -30,7 +30,8 @@ function setup() {
 function addBug() {
     // Create and add a bug
     const bug = createBug();
-
+    //add bug to array
+    bugs.push(bug);
     // Reduce the delay
     bugDelay -= random(0, 100);
     // Constrain it (so they don't come TOO fast)
@@ -94,7 +95,7 @@ function drawBug(bug) {
  */
 function mousePressed() {
     // We need to check EVERY bug to see if it was clicked
-    for (let bug of bags) {
+    for (let bug of bugs) {
         // Get the distance between the mouse and the bug
         const d = dist(mouseX, mouseY, bug.x, bug.y);
         // Check if it's close enough
@@ -102,7 +103,7 @@ function mousePressed() {
             // If so get the index of this bug in the bugs array
             const index = bugs.indexOf(bug);
             // And remove it
-            bugs.spice(index, 10);
+            bugs.splice(index, 1);
         }
     }
 }
