@@ -1,8 +1,8 @@
 /**
- * Title of Project
- * Author Name
+ * gradient
+ * Sabrina Chan Fee
  * 
- * Draw a star field with for loop!
+ * Draw a gradient
  */
 
 "use strict";
@@ -10,10 +10,10 @@
 const numStars = 100;
 
 /**
- * OH LOOK I DIDN'T DESCRIBE SETUP!!
+ * create canvass
 */
 function setup() {
-    createCanvas(400, 400);
+    createCanvas(600, 300);
 
 }
 
@@ -24,21 +24,14 @@ function setup() {
 function draw() {
     background(0);
 
-    randomSeed(1);
-    for (let i = 0; i < numStars; i++) {
-        drawStar();
+
+    for (let x = 0; x <= width; x++) {
+        const shade = map(x, 0, width, 0, 255);
+        push();
+        stroke(shade);
+        line(x, 0, x, height);
+        pop();
     }
 
 }
 
-function drawStar() {
-    const x = random(0, width);
-    const y = random(0, height);
-    const diameter = random(0, 2);
-
-    push();
-    fill(255);
-    noStroke();
-    ellipse(x, y, diameter);
-    pop();
-}
