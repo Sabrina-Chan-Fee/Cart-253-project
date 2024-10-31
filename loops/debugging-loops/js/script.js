@@ -27,9 +27,9 @@ function draw() {
 
     // How many legs to draw, we want three because
     // it's the legs on one side of the fly
-    const numLegs = 0;
+    const numLegs = 3;
     // Loop through the number of legs
-    for (let i = 0, i <numLegs, i++) {
+    for (let i = 0; i < numLegs; i++) {
         // Draw a leg each time, use i to calculate the
         // y position so it goes 100 pixels lower each time
         drawLeg(-50, 50 + i * 100, 50, 400);
@@ -53,7 +53,7 @@ function drawLeg(startX, startY, startDiameter, length) {
     // Loop until the x-position reaches beyond
     // the right side of the canvas (so that we draw the
     // entire leg across)
-    wile(x >= startX + length) {
+    while (x <= startX + length) {
         // Draw a single circle
         // The circles all added together across the loop
         // will represent our leg, they will jiggle around
