@@ -25,11 +25,14 @@ function draw() {
     // Starting at the top of the canvas
     // And ending at the bottom
     let x = 200;
-    let y = 0;
-    let diameter = map(mouseX, 0, width, 2, 100);
-    while (y <= height) {
+
+    let diameter = 25;
+
+    let numCircle = map(mouseY, 0, height, 0, 13);
+    for (let i = 0; i <= numCircle; i++) {
+        const y = i * diameter;
         ellipse(x, y, diameter);
-        y += diameter;
+
     }
 
 
