@@ -1,12 +1,11 @@
 /**
- * Mixing Cake batter
+ * Apple cake making 
  * By Sabrina Chan Fee
  * 
- * A game where the player addes the ingredients and mixes the cake batter in the bowl!
+ * A game where the player picks apples, make a cake batter and bakes a cake
  * 
  * Controls: 
- * - drag and drop ingredients into the bowl
- * - circulate mouse in bowl to mix everything togther
+ * - 
  * 
  * Uses:
  * p5.js
@@ -21,27 +20,38 @@ const canvas = {
     weight: 600,
     height: 600,
 };
-//Mixing Bowl
-const mixingBowl = {
-    // position
-    x: canvas.weight / 3,
-    y: canvas.height / 3,
 
-    //size
-    size: 300,
+const tree = {
 
-    // color
-    color: "#ff0000",
+    leaf: {
+        //position
+        x: canvas.weight / 2,
+        y: canvas.height / 5,
+        //size
+        sizeWeight: 500,
+        sizeHeight: 300,
+    },
+
+    trunk: {
+        //position
+        x: canvas.weight / 2 - 50,
+        y: canvas.height / 5,
+        //size
+        sizeWeight: 100,
+        sizeHeight: 600,
+    },
+
 };
 
+
 //cake batter
-const cakeBatter = {
+const apple = {
     // position
-    x: canvas.weight / 3,
-    y: canvas.height / 3,
+    x: tree.leaf.x,
+    y: tree.leaf.y,
 
     //size
-    size: 260,
+    size: 60,
 
     // color
     color: {
@@ -50,77 +60,12 @@ const cakeBatter = {
         b: 120,
     },
 
-};
-
-//Ingredient: Strawberry
-const Strawberry = {
-    //position
-    x: 100,
-    y: 500,
-
-    //size
-    size: 100,
-
-    // color
-    color: {
-        r: 255,
-        g: 192,
-        b: 203,
-    },
-
-    //to make strawberry appear/disappear
-    visible: true,
-    //to check if object can be dragged
-    dragging: false,
-};
-
-//Ingredient: Chocolate
-const Chocolate = {
-    //position
-    x: 300,
-    y: 500,
-
-    //size
-    size: 100,
-
-    // color
-    color: {
-        r: 101,
-        g: 67,
-        b: 33,
-    },
-
-    //to make strawberry appear/disappear
-    visible: true,
-    //to check if object can be dragged
-    dragging: false,
-};
-
-//Ingredient: Flour
-const Flour = {
-    //position
-    x: 500,
-    y: 500,
-
-    //size
-    size: 100,
-
-    // color
-    color: {
-        r: 250,
-        g: 235,
-        b: 215,
-    },
-
-    //to make strawberry appear/disappear
-    visible: true,
-    //to check if object can be dragged
-    dragging: false,
+    isRotten: false,
 
 };
 
-
-
+//empty apple array to store 8 apples
+let apples = []
 
 //create the canvas
 function setup() {
@@ -133,69 +78,10 @@ function setup() {
 function draw() {
     //color the background
     background(255, 200, 127);
-
-
-    //mixing cake batter with the mouse to change color
-    mixingCakeBatterWithMouse();
-    //when player adds a new ingredient the cake batter will change color
-    changeBatterColorWhenAddIngredientsToCakeBatter();
-
-    //draw the bowl with the cake batter inside
-    drawMixingBowl();
-    drawCakeBatter();
-
-    //ingredients (strawberry, chocolat, flour)
-    // Strawberry
-    if (Strawberry.dragging) {// if strawberry is being clicked change it's location to mouse's location, so user can drag it to the bowl
-        Strawberry.x = mouseX;
-        Strawberry.y = mouseY;
-    }
-    if (Strawberry.visible) {//if strawberry is not in the bowl stay visible
-        drawStrawberry();
-    }
-
-    // Chocolate
-    if (Chocolate.dragging) {// if Chocolate is being clicked change it's location to mouse's location, so user can drag it to the bowl
-        Chocolate.x = mouseX;
-        Chocolate.y = mouseY;
-    }
-    if (Chocolate.visible) {//if Chocolate is not in the bowl stay visible
-        drawChocolate();
-    }
-
-    // Flour
-    if (Flour.dragging) {// if Flour is being clicked change it's location to mouse's location, so user can drag it to the bowl
-        Flour.x = mouseX;
-        Flour.y = mouseY;
-    }
-    if (Flour.visible) {//if Flour is not in the bowl stay visible
-        drawFlour();
-    }
-}
-
-/**
- * Change to various cake batter color while user has added all the ingredients and is mixing the bowl
- */
-function mixingCakeBatterWithMouse() {
-
-    //distance between the mouse and the center of the cake batter
-    const distanceMouseToCake = dist(mouseX, mouseY, cakeBatter.x, cakeBatter.y);
-    //see when mouse is considered overlapping
-    const mouseOverlapsCakeBatter = (distanceMouseToCake < cakeBatter.size / 2);
-    //check if teh mouse is movign continuously 
-    const mouseIsMoving = (movedX !== 0 || movedY !== 0);
-
-    //if the mouse is moving in the bowl and all the ingredients have been added then change color
-    if (mouseOverlapsCakeBatter && mouseIsMoving && !Strawberry.visible && !Chocolate.visible && !Flour.visible) {
-
-        //change color of batter when mixed
-        cakeBatter.color.r = map(mouseX, 0, canvas.weight, 0, 250);
-        cakeBatter.color.g = map(mouseY, 0, canvas.height, 0, 250);
-        cakeBatter.color.b = map(mouseY, 0, canvas.weight, 0, 25);
-
-    }
+    drawTree();
 
 }
+
 
 /**
  * Check to see if mouse is overlaping with ingredient
@@ -288,78 +174,60 @@ function mouseReleased() {
 }
 
 /**
- * Change color of the cake batter depending on what ingredient was added
+ * Displays the title page
  */
-function changeBatterColorWhenAddIngredientsToCakeBatter() {
-    //When strawberry is added combine RGB color average of both batter and ingredient
-    if (Strawberry.visible == false) {
-        cakeBatter.color.r = (cakeBatter.color.r + Strawberry.color.r) / 2;
-        cakeBatter.color.g = (cakeBatter.color.g + Strawberry.color.g) / 2;
-        cakeBatter.color.b = (cakeBatter.color.b + Strawberry.color.b) / 2;
-    }
-    //When Chocolate is added combine RGB color average of both batter and ingredient
-    if (Chocolate.visible == false) {
-        cakeBatter.color.r = (cakeBatter.color.r + Chocolate.color.r) / 2;
-        cakeBatter.color.g = (cakeBatter.color.g + Chocolate.color.g) / 2;
-        cakeBatter.color.b = (cakeBatter.color.b + Chocolate.color.b) / 2;
-    }
-    //When Flour is added combine RGB color average of both batter and ingredient
-    if (Flour.visible == false) {
-        cakeBatter.color.r = (cakeBatter.color.r + Flour.color.r) / 2;
-        cakeBatter.color.g = (cakeBatter.color.g + Flour.color.g) / 2;
-        cakeBatter.color.b = (cakeBatter.color.b + Flour.color.b) / 2;
-    }
-}
-
-/**
- * Draw a mixing bowl
- */
-function drawMixingBowl() {
+function title() {
+    //game title
     push();
-    noStroke();
-    fill(mixingBowl.color);
-    ellipse(mixingBowl.x, mixingBowl.y, mixingBowl.size);
+    textAlign(CENTER, BASELINE);
+    textSize(30);
+    background("pink");
+    fill("black");
+    textStyle(BOLD);
+    text("Archery Game!", 320, 150);
     pop();
 
-}
-/**
- * Draw a cake batter
- */
-function drawCakeBatter() {
+    //instruction on how to start
     push();
-    noStroke();
-    fill(cakeBatter.color.r, cakeBatter.color.g, cakeBatter.color.b);
-    ellipse(cakeBatter.x, cakeBatter.y, cakeBatter.size);
+    textAlign(CENTER, BASELINE);
+    textSize(20);
+    text("(press \"s\" to start!)", 320, 190);
+    pop();
+
+    //rules display and points system
+    push();
+    textAlign(CENTER, BASELINE);
+    textSize(20);
+    text("\nUse arrow key to move arrow\nUse spacebar to shoot arrow\nLose 1 arrow for every missed shot!\n\nPink flower: 1 point\n Golden Disk: 2 point", 320, 220);
     pop();
 }
 
 /**
- * Draw a Strawberryl
+ * Draw a apple tree
  */
-function drawStrawberry() {
+function drawTree() {
+
+    background("#AFEEEE");
+
+    // tree trunk
     push();
     noStroke();
-    fill(Strawberry.color.r, Strawberry.color.g, Strawberry.color.b);
-    ellipse(Strawberry.x, Strawberry.y, Strawberry.size);
+    fill("brown");
+    rect(tree.trunk.x, tree.trunk.y, tree.trunk.sizeWeight, tree.trunk.sizeHeight)
     pop();
-}
-/**
- * Draw a Chocolate
- */
-function drawChocolate() {
+
+    // Tree leafs
     push();
     noStroke();
-    fill(Chocolate.color.r, Chocolate.color.g, Chocolate.color.b);
-    ellipse(Chocolate.x, Chocolate.y, Chocolate.size);
+    fill("green");
+    ellipse(tree.leaf.x, tree.leaf.y, tree.leaf.sizeWeight, tree.leaf.sizeHeight);
     pop();
-}
-/**
- * Draw a Flour
- */
-function drawFlour() {
+
+    // apple in tree
     push();
     noStroke();
-    fill(Flour.color.r, Flour.color.g, Flour.color.b);
-    ellipse(Flour.x, Flour.y, Flour.size);
+    fill("red");
+    ellipse(apple.x - 140, apple.y + 150, apple.size);
     pop();
+
 }
