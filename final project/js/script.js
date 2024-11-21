@@ -17,7 +17,7 @@
 //canvas 
 const canvas = {
     //size
-    weight: 600,
+    width: 600,
     height: 600,
 };
 
@@ -26,19 +26,19 @@ const tree = {
 
     leaf: {
         //position
-        x: canvas.weight / 2,
+        x: canvas.width / 2,
         y: canvas.height / 5,
         //size
-        sizeWeight: 500,
+        sizeWidth: 500,
         sizeHeight: 300,
     },
 
     trunk: {
         //position
-        x: canvas.weight / 2 - 50,
+        x: canvas.width / 2 - 50,
         y: canvas.height / 5,
         //size
-        sizeWeight: 100,
+        sizeWidth: 100,
         sizeHeight: 600,
     },
 
@@ -47,7 +47,7 @@ const tree = {
         x: 450,
         y: 500,
         //size
-        sizeWeight: 100,
+        sizeWidth: 100,
         sizeHeight: 50,
     },
 
@@ -56,7 +56,7 @@ const tree = {
         x: 0,
         y: 550,
         //size
-        sizeWeight: 600,
+        sizeWidth: 600,
         sizeHeight: 50,
     },
 
@@ -79,11 +79,11 @@ const apple = {
     inBasket: false,
 
 };
-let state = "state";
+let state = "title";
 
 //create the canvas
 function setup() {
-    createCanvas(canvas.weight, canvas.height);
+    createCanvas(canvas.width, canvas.height);
 }
 
 /**
@@ -91,20 +91,33 @@ function setup() {
  */
 function draw() {
 
-    // if (state == "title")
-    //color the background
-    background(255, 200, 127);
-    drawTree();
+    if (state === "title") {
+        title();
+    }
+    else if (state === "applePick") {
 
-    // if (mouseClicked(apple))
-    //     apple.inBasket = true;
+        applePicking();
+    }
+    else if (state === "makeBatter") {
+        instructionForCakeBatter();
+    }
+    else if (state === "overTime") {
+        //over game
+    }
+    else {
+        //display score
+    }
+    //color the background
+    // background(255, 200, 127);
 
 
 }
-
+function applePicking() {
+    drawTree();
+}
 
 /**
- * Check to see if mouse is overlaping with ingredient
+ * Check to see if mouse is overlaping with apple
  */
 function mousePressed() {
 
@@ -113,13 +126,10 @@ function mousePressed() {
     //see when mouse is considered overlapping
     const mouseOverlap = (distance < apple.size / 2);
 
-
+    // check if the mouse is clickong on the apple
     if (mouseOverlap) {
         apple.inBasket = true;
-
     }
-
-
 
 }
 
@@ -131,27 +141,55 @@ function mousePressed() {
 function title() {
     //game title
     push();
-    textAlign(CENTER, BASELINE);
+    textAlign(CENTER, CENTER);
     textSize(30);
     background("pink");
     fill("black");
     textStyle(BOLD);
-    text("Archery Game!", 320, 150);
+    text("Bake your own apple cake!", canvas.width / 2, canvas.height / 3);
     pop();
 
     //instruction on how to start
     push();
-    textAlign(CENTER, BASELINE);
+    textAlign(CENTER, CENTER);
     textSize(20);
-    text("(press \"s\" to start!)", 320, 190);
+    text("(press \"s\" to start!)", canvas.width / 2, canvas.height / 2);
     pop();
 
-    //rules display and points system
+    //instruction on how to play
     push();
-    textAlign(CENTER, BASELINE);
+    textAlign(CENTER, CENTER);
     textSize(20);
-    text("\nUse arrow key to move arrow\nUse spacebar to shoot arrow\nLose 1 arrow for every missed shot!\n\nPink flower: 1 point\n Golden Disk: 2 point", 320, 220);
+    text("Click on the apple to put it in your basket", canvas.width / 2, canvas.height - 150);
     pop();
+
+}
+
+function instructionForCakeBatter() {
+    //game title
+    push();
+    textAlign(CENTER, CENTER);
+    textSize(30);
+    background("pink");
+    fill("black");
+    textStyle(BOLD);
+    text("Time to make the batter!", canvas.width / 2, canvas.height / 3);
+    pop();
+
+    //instruction on how to start
+    push();
+    textAlign(CENTER, CENTER);
+    textSize(20);
+    text("(press \"s\" to start!)", canvas.width / 2, canvas.height / 2);
+    pop();
+
+    //instruction on how to play
+    push();
+    textAlign(CENTER, CENTER);
+    textSize(20);
+    text("BLABLABALBALBALBA", canvas.width / 2, canvas.height - 150);
+    pop();
+
 }
 
 /**
@@ -165,14 +203,14 @@ function drawTree() {
     push();
     noStroke();
     fill("brown");
-    rect(tree.trunk.x, tree.trunk.y, tree.trunk.sizeWeight, tree.trunk.sizeHeight)
+    rect(tree.trunk.x, tree.trunk.y, tree.trunk.sizeWidth, tree.trunk.sizeHeight)
     pop();
 
     // Tree leafs
     push();
     noStroke();
     fill("green");
-    ellipse(tree.leaf.x, tree.leaf.y, tree.leaf.sizeWeight, tree.leaf.sizeHeight);
+    ellipse(tree.leaf.x, tree.leaf.y, tree.leaf.sizeWidth, tree.leaf.sizeHeight);
     pop();
 
 
@@ -180,7 +218,7 @@ function drawTree() {
     push();
     noStroke();
     fill("green");
-    rect(tree.grass.x, tree.grass.y, tree.grass.sizeWeight, tree.grass.sizeHeight);
+    rect(tree.grass.x, tree.grass.y, tree.grass.sizeWidth, tree.grass.sizeHeight);
     pop();
 
     // apple in tree
@@ -203,7 +241,20 @@ function drawTree() {
     push();
     noStroke();
     fill("orange");
-    rect(tree.basket.x, tree.basket.y, tree.basket.sizeWeight, tree.basket.sizeHeight)
+    rect(tree.basket.x, tree.basket.y, tree.basket.sizeWidth, tree.basket.sizeHeight)
     pop();
+
+}
+
+/**
+ * Moves the arrow with left, right arrow and space bar
+ */
+function keyPressed() {
+    if (state === "title" && key == "s" && keyIsPressed) {//press space bar to start the game
+        state = "applePick";
+    }
+    else if (state = "applePick" && apple.inBasket) {
+        state = "makeBatter";
+    }
 
 }
