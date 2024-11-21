@@ -66,9 +66,9 @@ const tree = {
 //apple
 const apple = {
     // position
-    x: tree.leaf.x,
-    y: tree.leaf.y,
-
+    x: tree.leaf.x - 140,
+    y: tree.leaf.y + 150,
+    // ellipse(apple.x - 140, apple.y + 150, apple.size);
     //size
     size: 60,
 
@@ -76,9 +76,10 @@ const apple = {
     color: "red",
 
     isRotten: false,
-    isVisible: true,
+    inBasket: false,
 
 };
+let state = "state";
 
 //create the canvas
 function setup() {
@@ -89,11 +90,14 @@ function setup() {
  * Fills the background, displays the tree
  */
 function draw() {
+
+    // if (state == "title")
     //color the background
     background(255, 200, 127);
     drawTree();
 
-    mousePressed(apple);
+    // if (mouseClicked(apple))
+    //     apple.inBasket = true;
 
 
 }
@@ -102,21 +106,19 @@ function draw() {
 /**
  * Check to see if mouse is overlaping with ingredient
  */
-function mousePressed(element) {
-    // Strawberry
+function mousePressed() {
 
-    //distance between the mouse and the center of the Strawberry
-    const distance = dist(mouseX, mouseY, element.x, element.y);
+    //distance between the mouse and the center of the apple
+    const distance = dist(mouseX, mouseY, apple.x, apple.y);
     //see when mouse is considered overlapping
-    const mouseOverlap = (distance < element.size / 2);
-    console.log(mouseOverlap);
+    const mouseOverlap = (distance < apple.size / 2);
+
+
     if (mouseOverlap) {
-        // if mouse is overlaping with ingredient change dragging to true so that user can move it to the bowl
-        // element.dragging = true;
-        console.log("helo");
-        element.fill = "pink";
-        element.isVisible = false;
+        apple.inBasket = true;
+
     }
+
 
 
 }
@@ -173,30 +175,35 @@ function drawTree() {
     ellipse(tree.leaf.x, tree.leaf.y, tree.leaf.sizeWeight, tree.leaf.sizeHeight);
     pop();
 
-    //basket
-    push();
-    noStroke();
-    fill("orange");
-    rect(tree.basket.x, tree.basket.y, tree.basket.sizeWeight, tree.basket.sizeHeight)
-    pop();
 
     //grass
     push();
     noStroke();
     fill("green");
     rect(tree.grass.x, tree.grass.y, tree.grass.sizeWeight, tree.grass.sizeHeight);
-    // rect(0, canvas.y - tree.basket.sizeHeight, 700, 20);
     pop();
 
     // apple in tree
-    if (apple.isVisible) {
+    if (!apple.inBasket) {
         push();
         noStroke();
         fill(apple.color);
-        ellipse(apple.x - 140, apple.y + 150, apple.size);
+        // ellipse(apple.x - 140, apple.y + 150, apple.size);
+        ellipse(apple.x, apple.y, apple.size);
         pop();
     } else {
-
+        push();
+        noStroke();
+        fill(apple.color);
+        ellipse(tree.basket.x + 50, tree.basket.y, apple.size);
+        pop();
     }
+
+    //basket
+    push();
+    noStroke();
+    fill("orange");
+    rect(tree.basket.x, tree.basket.y, tree.basket.sizeWeight, tree.basket.sizeHeight)
+    pop();
 
 }
