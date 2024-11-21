@@ -79,7 +79,7 @@ const apple = {
     inBasket: false,
 
 };
-let state = "title";
+let state = "applePickingInstruction";
 
 //create the canvas
 function setup() {
@@ -91,22 +91,18 @@ function setup() {
  */
 function draw() {
 
-    if (state === "title") {
-        //display apple piccking instruction and title card
-        title();
+    if (state === "applePickingInstruction") {
+        //display apple piccking instruction 
+        applePickingInstruction();
     }
     else if (state === "applePick") {
 
         //player picks apple from the tree
         applePicking();
 
-        //if apple picking is is complet go to the batter game instructions
-        // if (apple.inBasket)
-        // state = "makeBatterInstructions";
-
     }
     else if (state === "makeBatterInstructions") {
-        instructionForCakeBatter();
+        cakeBatterInstruction();
     }
     else if (state === "makeBatter") {
         makeBatter();
@@ -117,8 +113,6 @@ function draw() {
     else {
         //display score
     }
-    //color the background
-    // background(255, 200, 127);
 
 
 }
@@ -127,7 +121,7 @@ function draw() {
  * Moves the arrow with left, right arrow and space bar
  */
 function keyPressed() {
-    if (state === "title" && key == "s" && keyIsPressed) {//press space bar to start the game
+    if (state === "applePickingInstruction" && key == "s" && keyIsPressed) {//press space bar to start the game
         state = "applePick";
     } else if (state === "makeBatterInstructions" && key == "s" && keyIsPressed) {
         state = "makeBatter";
@@ -154,7 +148,7 @@ function mousePressed() {
     //see when mouse is considered overlapping
     const mouseOverlap = (distance < apple.size / 2);
 
-    // check if the mouse is clickong on the apple
+    // check if the mouse is clicking on the apple
     if (mouseOverlap) {
         apple.inBasket = true;
         setTimeout(() => { state = "makeBatterInstructions" }, 1000); // after 1000 state gets changes to makeBatter instruction
@@ -163,10 +157,10 @@ function mousePressed() {
 }
 
 /**
- * Displays the title page
+ * Displays the applePickingInstruction page
  */
-function title() {
-    //game title
+function applePickingInstruction() {
+    //game applePickingInstruction
     push();
     textAlign(CENTER, CENTER);
     textSize(30);
@@ -192,8 +186,11 @@ function title() {
 
 }
 
-function instructionForCakeBatter() {
-    //game title
+/**
+ * Displays the game cake batter instructions page
+ */
+function cakeBatterInstruction() {
+    //game applePickingInstruction
     push();
     textAlign(CENTER, CENTER);
     textSize(30);
@@ -275,4 +272,9 @@ function drawTree() {
 
 function drawKitchen() {
 
+    background("grey");
+
+    push();
+
+    pop();
 }
