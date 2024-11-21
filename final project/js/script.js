@@ -92,14 +92,24 @@ function setup() {
 function draw() {
 
     if (state === "title") {
+        //display apple piccking instruction and title card
         title();
     }
     else if (state === "applePick") {
 
+        //player picks apple from the tree
         applePicking();
+
+        //if apple picking is is complet go to the batter game instructions
+        // if (apple.inBasket)
+        // state = "makeBatterInstructions";
+
+    }
+    else if (state === "makeBatterInstructions") {
+        instructionForCakeBatter();
     }
     else if (state === "makeBatter") {
-        instructionForCakeBatter();
+        makeBatter();
     }
     else if (state === "overTime") {
         //over game
@@ -112,8 +122,26 @@ function draw() {
 
 
 }
+
+/**
+ * Moves the arrow with left, right arrow and space bar
+ */
+function keyPressed() {
+    if (state === "title" && key == "s" && keyIsPressed) {//press space bar to start the game
+        state = "applePick";
+    } else if (state === "makeBatterInstructions" && key == "s" && keyIsPressed) {
+        state = "makeBatter";
+    }
+
+
+}
+
 function applePicking() {
     drawTree();
+}
+
+function makeBatter() {
+    drawKitchen();
 }
 
 /**
@@ -129,11 +157,10 @@ function mousePressed() {
     // check if the mouse is clickong on the apple
     if (mouseOverlap) {
         apple.inBasket = true;
+        setTimeout(() => { state = "makeBatterInstructions" }, 1000); // after 1000 state gets changes to makeBatter instruction
     }
 
 }
-
-
 
 /**
  * Displays the title page
@@ -246,15 +273,6 @@ function drawTree() {
 
 }
 
-/**
- * Moves the arrow with left, right arrow and space bar
- */
-function keyPressed() {
-    if (state === "title" && key == "s" && keyIsPressed) {//press space bar to start the game
-        state = "applePick";
-    }
-    else if (state = "applePick" && apple.inBasket) {
-        state = "makeBatter";
-    }
+function drawKitchen() {
 
 }
