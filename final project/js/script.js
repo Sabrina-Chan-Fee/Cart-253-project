@@ -21,6 +21,7 @@ const canvas = {
     height: 600,
 };
 
+//tree
 const tree = {
 
     leaf: {
@@ -41,10 +42,28 @@ const tree = {
         sizeHeight: 600,
     },
 
+    basket: {
+        //position
+        x: 450,
+        y: 500,
+        //size
+        sizeWeight: 100,
+        sizeHeight: 50,
+    },
+
+    grass: {
+        //position
+        x: 0,
+        y: 550,
+        //size
+        sizeWeight: 600,
+        sizeHeight: 50,
+    },
+
 };
 
 
-//cake batter
+//apple
 const apple = {
     // position
     x: tree.leaf.x,
@@ -54,18 +73,12 @@ const apple = {
     size: 60,
 
     // color
-    color: {
-        r: 180,
-        g: 150,
-        b: 120,
-    },
+    color: "red",
 
     isRotten: false,
+    isVisible: true,
 
 };
-
-//empty apple array to store 8 apples
-let apples = []
 
 //create the canvas
 function setup() {
@@ -73,12 +86,15 @@ function setup() {
 }
 
 /**
- * Fills the background, displays the bowl, cake batter, ingredient ( strawberry, chocolat, flour)
+ * Fills the background, displays the tree
  */
 function draw() {
     //color the background
     background(255, 200, 127);
     drawTree();
+
+    mousePressed(apple);
+
 
 }
 
@@ -86,92 +102,26 @@ function draw() {
 /**
  * Check to see if mouse is overlaping with ingredient
  */
-function mousePressed() {
+function mousePressed(element) {
     // Strawberry
 
     //distance between the mouse and the center of the Strawberry
-    const distanceStrawberry = dist(mouseX, mouseY, Strawberry.x, Strawberry.y);
+    const distance = dist(mouseX, mouseY, element.x, element.y);
     //see when mouse is considered overlapping
-    const mouseOverlapStrawberry = (distanceStrawberry < Strawberry.size / 2);
-    if (mouseOverlapStrawberry) {
+    const mouseOverlap = (distance < element.size / 2);
+    console.log(mouseOverlap);
+    if (mouseOverlap) {
         // if mouse is overlaping with ingredient change dragging to true so that user can move it to the bowl
-        Strawberry.dragging = true;
+        // element.dragging = true;
+        console.log("helo");
+        element.fill = "pink";
+        element.isVisible = false;
     }
 
-    // Chocolate
-
-    //distance between the mouse and the center of the Chocolate
-    const distanceChocolate = dist(mouseX, mouseY, Chocolate.x, Chocolate.y);
-    //see when mouse is considered overlapping
-    const mouseOverlapChocolate = (distanceChocolate < Chocolate.size / 2);
-    if (mouseOverlapChocolate) {
-        // if mouse is overlaping with ingredient change dragging to true so that user can move it to the bowl
-        Chocolate.dragging = true;
-    }
-
-    // Flour
-
-    //distance between the mouse and the center of the Flour
-    const distanceFlour = dist(mouseX, mouseY, Flour.x, Flour.y);
-    //see when mouse is considered overlapping
-    const mouseOverlapFlour = (distanceFlour < Flour.size / 2);
-    if (mouseOverlapFlour) {
-        // if mouse is overlaping with ingredient change dragging to true so that user can move it to the bowl
-        Flour.dragging = true;
-    }
 
 }
 
-/**
- * Check to see if ingredient is overlaping with the bowl. once it is and dropped inside the bowl make ingredient invisble
- * create illussion that the ingredient was added to the bowl
- */
-function mouseReleased() {
 
-    // Strawberry
-    Strawberry.dragging = false;//stop use from dragging once they release the mouse
-
-    //Check to see if user is dropping the ingredient inside the bowl
-    //distance between the Strawberry and the center of the cake batter
-    const distanceStrawberryToCake = dist(Strawberry.x, Strawberry.y, cakeBatter.x, cakeBatter.y);
-    //see when ingredient is considered overlapping with the bowl
-    const strawberryOverlapsCakeBatter = (distanceStrawberryToCake < cakeBatter.size / 2);
-    //If ingredient is inside bowl make ingredient invisible
-    if (strawberryOverlapsCakeBatter)
-        Strawberry.visible = false;
-    else
-        Strawberry.visible = true;
-
-
-
-    // Chocolate
-    Chocolate.dragging = false;//stop use from dragging once they release the mouse
-
-    //Check to see if user is dropping the ingredient inside the bowl
-    //distance between the Chocolate and the center of the cake batter
-    const distanceChocolateToCake = dist(Chocolate.x, Chocolate.y, cakeBatter.x, cakeBatter.y);
-    //see when ingredient is considered overlapping with the bowl
-    const chocolateOverlapsCakeBatter = (distanceChocolateToCake < cakeBatter.size / 2);
-    //If ingredient is inside bowl make ingredient invisible
-    if (chocolateOverlapsCakeBatter)
-        Chocolate.visible = false;
-    else
-        Chocolate.visible = true;
-
-    // Flour
-    Flour.dragging = false;//stop use from dragging once they release the mouse
-
-    //Check to see if user is dropping the ingredient inside the bowl
-    //distance between the Flour and the center of the cake batter
-    const distanceFlourToCake = dist(Flour.x, Flour.y, cakeBatter.x, cakeBatter.y);
-    //see when ingredient is considered overlapping with the bowl
-    const flourOverlapsCakeBatter = (distanceFlourToCake < cakeBatter.size / 2);
-    //If ingredient is inside bowl make ingredient invisible
-    if (flourOverlapsCakeBatter)
-        Flour.visible = false;
-    else
-        Flour.visible = true;
-}
 
 /**
  * Displays the title page
@@ -223,11 +173,30 @@ function drawTree() {
     ellipse(tree.leaf.x, tree.leaf.y, tree.leaf.sizeWeight, tree.leaf.sizeHeight);
     pop();
 
-    // apple in tree
+    //basket
     push();
     noStroke();
-    fill("red");
-    ellipse(apple.x - 140, apple.y + 150, apple.size);
+    fill("orange");
+    rect(tree.basket.x, tree.basket.y, tree.basket.sizeWeight, tree.basket.sizeHeight)
     pop();
+
+    //grass
+    push();
+    noStroke();
+    fill("green");
+    rect(tree.grass.x, tree.grass.y, tree.grass.sizeWeight, tree.grass.sizeHeight);
+    // rect(0, canvas.y - tree.basket.sizeHeight, 700, 20);
+    pop();
+
+    // apple in tree
+    if (apple.isVisible) {
+        push();
+        noStroke();
+        fill(apple.color);
+        ellipse(apple.x - 140, apple.y + 150, apple.size);
+        pop();
+    } else {
+
+    }
 
 }
