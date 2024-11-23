@@ -121,8 +121,8 @@ const cake = {
 
 };
 
-// let state = "applePickingInstruction";
-let state = "ovenTime";
+let state = "applePickingInstruction";
+// let state = "ovenTime";
 
 //create the canvas
 function setup() {
@@ -139,26 +139,21 @@ function draw() {
         applePickingInstruction();
     }
     else if (state === "applePick") {
-
         //player picks apple from the tree
         applePicking();
-
-    }
-    else if (state === "makeBatterInstructions") {
-        cakeBatterInstruction();
     }
     else if (state === "makeBatter") {
+        //make cake batter game
         makeBatter();
     }
     else if (state === "ovenTime") {
         //oven game
-        // ovenInstruction();
         ovenCake();
     }
     else {
         //display score
+        gameOverScreen();
     }
-
 
 }
 
@@ -168,10 +163,7 @@ function draw() {
 function keyPressed() {
     if (state === "applePickingInstruction" && key == "s" && keyIsPressed) {//press space bar to start the game
         state = "applePick";
-    } else if (state === "makeBatterInstructions" && key == "s" && keyIsPressed) {
-        state = "makeBatter";
     }
-
 
 }
 
@@ -185,13 +177,28 @@ function makeBatter() {
 
 function ovenCake() {
     drawOven();
-    //ch
-    setTimeout(() => {
-        while (cake.colorCook.r != cake.colorRaw.r && cake.colorCook.g != cake.colorRaw.g && cake.colorCook.b != cake.colorRaw.b) {
+    // cookCake();
 
+    setTimeout(() => {
+        while (cake.colorCook.r < cake.colorRaw.r && cake.colorCook.g < cake.colorRaw.g && cake.colorCook.b < cake.colorRaw.b) {
+            if (cake.colorCook.r != cake.colorRaw.r) { cake.colorRaw.r -= 0.2; }
+            if (cake.colorCook.g != cake.colorRaw.g) { cake.colorRaw.g -= 0.2; }
+            if (cake.colorCook.b != cake.colorRaw.b) { cake.colorRaw.b -= 0.2; }
+            console.log("loop");
         }
+        setTimeout(() => { state = "gameOver" }, 1000);
     }, 1000);
 
+}
+
+function cookCake() {
+    // while (cake.colorCook.r != cake.colorRaw.r && cake.colorCook.g != cake.colorRaw.g && cake.colorCook.b != cake.colorRaw.b) {
+    //     if (cake.colorCook.r != cake.colorRaw.r) { cake.colorRaw.r -= 1; }
+    //     if (cake.colorCook.g != cake.colorRaw.g) { cake.colorRaw.g -= 1; }
+    //     if (cake.colorCook.b != cake.colorRaw.b) { cake.colorRaw.b -= 1; }
+    //     console.log("loop");
+    // }
+    console.log("finish");
 }
 /**
  * Check to see if mouse is overlaping with apple
@@ -206,11 +213,11 @@ function mousePressed() {
     // check if the mouse is clicking on the apple
     if (mouseOverlap && state === "applePick") {
         apple.inBasket = true;
-        setTimeout(() => { state = "makeBatterInstructions" }, 1000); // after 1000 state gets changes to makeBatter instruction
+        setTimeout(() => { state = "makeBatter" }, 1000); // after 1000 state gets changes to makeBatter game
     }
     else if (mouseOverlap && state === "makeBatter") {
         apple.inMixingBowl = true;
-        setTimeout(() => { state = "ovenTime" }, 1000); // after 1000 state gets changes to makeBatter instruction
+        setTimeout(() => { state = "ovenTime" }, 1000); // after 1000 state gets changes to oven baking game
     }
 
 }
@@ -245,68 +252,25 @@ function applePickingInstruction() {
 
 }
 
+
 /**
- * Displays the game cake batter instructions page
+ * Displays the game over screen
  */
-function cakeBatterInstruction() {
-    //game applePickingInstruction
+function gameOverScreen() {
+
     push();
     textAlign(CENTER, CENTER);
     textSize(30);
-    background("pink");
+    background("pale blue");
     fill("black");
     textStyle(BOLD);
-    text("Time to make the batter!", canvas.width / 2, canvas.height / 3);
-    pop();
-
-    //instruction on how to start
-    push();
-    textAlign(CENTER, CENTER);
-    textSize(20);
-    text("(press \"s\" to start!)", canvas.width / 2, canvas.height / 2);
-    pop();
-
-    //instruction on how to play
-    push();
-    textAlign(CENTER, CENTER);
-    textSize(20);
-    text("BLABLABALBALBALBA", canvas.width / 2, canvas.height - 150);
+    text("YOU MADE A CAKE YAY", canvas.width / 2, canvas.height / 3);
     pop();
 
 }
 
 /**
- * Displays the game cake batter instructions page
- */
-// function ovenInstruction() {
-//     //game applePickingInstruction
-//     push();
-//     textAlign(CENTER, CENTER);
-//     textSize(30);
-//     background("pink");
-//     fill("black");
-//     textStyle(BOLD);
-//     text("Time to Bake the batter!", canvas.width / 2, canvas.height / 3);
-//     pop();
-
-//     //instruction on how to start
-//     push();
-//     textAlign(CENTER, CENTER);
-//     textSize(20);
-//     text("(press \"s\" to start!)", canvas.width / 2, canvas.height / 2);
-//     pop();
-
-//     //instruction on how to play
-//     push();
-//     textAlign(CENTER, CENTER);
-//     textSize(20);
-//     text("BLABLABALBALBALBA", canvas.width / 2, canvas.height - 150);
-//     pop();
-
-// }
-
-/**
- * Draw a apple tree
+ * Draw a apple tree with bascket
  */
 function drawTree() {
 
@@ -358,6 +322,9 @@ function drawTree() {
 
 }
 
+/**
+ * Draw a kitchen table with apple and a bowl of cake batter
+ */
 function drawKitchen() {
     apple.y = 440;
     apple.x = 400;
@@ -423,6 +390,9 @@ function drawKitchen() {
     }
 }
 
+/**
+ * Draw a oven with a cake inside
+ */
 function drawOven() {
     background("bisque");
 
