@@ -77,9 +77,52 @@ const apple = {
 
     isRotten: false,
     inBasket: false,
+    inMixingBowl: false,
 
 };
-let state = "applePickingInstruction";
+
+//Mixing Bowl
+const mixingBowl = {
+    // position
+    x: canvas.width / 3,
+    y: canvas.height / 3,
+
+    //size
+    size: 300,
+
+    // color
+    color: "#DEB887",
+};
+
+//Mixing Bowl
+const cake = {
+    // position
+    x: canvas.width / 3,
+    y: canvas.height / 2.5,
+
+    //size
+    size: {
+        width: 200,
+        hight: 150,
+    },
+
+    // color
+    colorRaw: {
+        r: 222,
+        g: 184,
+        b: 135,
+    },
+
+    colorCook: {
+        r: 154,
+        g: 88,
+        b: 23,
+    },
+
+};
+
+// let state = "applePickingInstruction";
+let state = "ovenTime";
 
 //create the canvas
 function setup() {
@@ -107,8 +150,10 @@ function draw() {
     else if (state === "makeBatter") {
         makeBatter();
     }
-    else if (state === "overTime") {
-        //over game
+    else if (state === "ovenTime") {
+        //oven game
+        // ovenInstruction();
+        ovenCake();
     }
     else {
         //display score
@@ -138,6 +183,16 @@ function makeBatter() {
     drawKitchen();
 }
 
+function ovenCake() {
+    drawOven();
+    //ch
+    setTimeout(() => {
+        while (cake.colorCook.r != cake.colorRaw.r && cake.colorCook.g != cake.colorRaw.g && cake.colorCook.b != cake.colorRaw.b) {
+
+        }
+    }, 1000);
+
+}
 /**
  * Check to see if mouse is overlaping with apple
  */
@@ -149,9 +204,13 @@ function mousePressed() {
     const mouseOverlap = (distance < apple.size / 2);
 
     // check if the mouse is clicking on the apple
-    if (mouseOverlap) {
+    if (mouseOverlap && state === "applePick") {
         apple.inBasket = true;
         setTimeout(() => { state = "makeBatterInstructions" }, 1000); // after 1000 state gets changes to makeBatter instruction
+    }
+    else if (mouseOverlap && state === "makeBatter") {
+        apple.inMixingBowl = true;
+        setTimeout(() => { state = "ovenTime" }, 1000); // after 1000 state gets changes to makeBatter instruction
     }
 
 }
@@ -217,6 +276,36 @@ function cakeBatterInstruction() {
 }
 
 /**
+ * Displays the game cake batter instructions page
+ */
+// function ovenInstruction() {
+//     //game applePickingInstruction
+//     push();
+//     textAlign(CENTER, CENTER);
+//     textSize(30);
+//     background("pink");
+//     fill("black");
+//     textStyle(BOLD);
+//     text("Time to Bake the batter!", canvas.width / 2, canvas.height / 3);
+//     pop();
+
+//     //instruction on how to start
+//     push();
+//     textAlign(CENTER, CENTER);
+//     textSize(20);
+//     text("(press \"s\" to start!)", canvas.width / 2, canvas.height / 2);
+//     pop();
+
+//     //instruction on how to play
+//     push();
+//     textAlign(CENTER, CENTER);
+//     textSize(20);
+//     text("BLABLABALBALBALBA", canvas.width / 2, canvas.height - 150);
+//     pop();
+
+// }
+
+/**
  * Draw a apple tree
  */
 function drawTree() {
@@ -250,7 +339,6 @@ function drawTree() {
         push();
         noStroke();
         fill(apple.color);
-        // ellipse(apple.x - 140, apple.y + 150, apple.size);
         ellipse(apple.x, apple.y, apple.size);
         pop();
     } else {
@@ -271,10 +359,113 @@ function drawTree() {
 }
 
 function drawKitchen() {
+    apple.y = 440;
+    apple.x = 400;
 
-    background("grey");
+    background("bisque");
+
+    //bowl
+    push();
+    noStroke();
+    fill(mixingBowl.color);
+    ellipse(mixingBowl.x, mixingBowl.y, mixingBowl.size);
+    pop();
+
+    //bowl
+    push();
+    noStroke();
+    fill(mixingBowl.color);
+    ellipse(mixingBowl.x, mixingBowl.y, mixingBowl.size);
+    pop();
+
+    //batter
+    push();
+    noStroke();
+    fill("#8B4513");
+    ellipse(mixingBowl.x, mixingBowl.y, mixingBowl.size - 50);
+    pop();
+
+    //game notes
+    push();
+    textAlign(CENTER, BASELINE);
+    textSize(25);
+    fill("black");
+    textStyle(BOLD);
+    text("Click on apple to add to the cake batter", canvas.width / 2, canvas.height - 75);
+    pop();
+
+
+    if (!apple.inMixingBowl) {
+        //apple stem
+        push();
+        noStroke();
+        fill("#800000");
+        rect(apple.x - 5, apple.y - 50, 10, 30);
+        pop();
+
+        //apple
+        push();
+        noStroke();
+        fill(apple.color);
+        ellipse(apple.x, apple.y, apple.size);
+        pop();
+    } else {
+        console.log("hello");
+        //change location of apple to be in the bowl
+        apple.y = mixingBowl.y;
+        apple.x = mixingBowl.x;
+        //apple
+        push();
+        noStroke();
+        fill(apple.color);
+        ellipse(apple.x, apple.y, apple.size);
+        pop();
+    }
+}
+
+function drawOven() {
+    background("bisque");
+
+    //oven
+    push();
+    noStroke();
+    fill("#778899");
+    rect(cake.x - 100, cake.y - 100, 400, 300);
+    pop();
+
+    //oven window
+    push();
+    noStroke();
+    fill("#B0C4DE");
+    rect(cake.x - 50, cake.y - 50, 300, 200);
+    pop();
+
+    //oven doornobs
+    push();
+    noStroke();
+    fill("black");
+    ellipse(cake.x, cake.y - 75, 30);
+    pop();
 
     push();
+    noStroke();
+    fill("black");
+    ellipse(cake.x + 50, cake.y - 75, 30);
+    pop();
 
+    //cake
+    push();
+    noStroke();
+    fill(cake.colorRaw.r, cake.colorRaw.g, cake.colorRaw.b);
+    rect(cake.x, cake.y, cake.size.width, cake.size.hight);
+    pop();
+
+    //game notes
+    push();
+    textAlign(CENTER, BASELINE);
+    textSize(25);
+    fill("black");
+    textStyle(BOLD);
+    text("Patiently wait for the cake to bake...", canvas.width / 2, canvas.height - 75);
     pop();
 }
