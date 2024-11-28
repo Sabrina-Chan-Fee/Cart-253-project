@@ -181,12 +181,6 @@ function ovenCake() {
     drawOven();
     bakeCake();
 
-    // if (cake.colorCook.r <= cake.colorRaw.r) { cake.colorRaw.r -= 0.2; }
-    // if (cake.colorCook.g <= cake.colorRaw.g) { cake.colorRaw.g -= 0.2; }
-    // if (cake.colorCook.b <= cake.colorRaw.b) { cake.colorRaw.b -= 0.2; }
-
-
-
 }
 
 function bakeCake() {

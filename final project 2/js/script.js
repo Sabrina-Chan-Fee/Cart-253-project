@@ -79,6 +79,11 @@ const apple = {
     inBasket: false,
     inMixingBowl: false,
 
+    velocity: {
+        x: 0,
+        y: 1.9,
+    },
+
 };
 
 //Mixing Bowl
@@ -143,6 +148,8 @@ function draw() {
     else if (state === "applePick") {
         //player picks apple from the tree
         applePicking();
+
+
     }
     else if (state === "makeBatter") {
         //make cake batter game
@@ -171,6 +178,9 @@ function keyPressed() {
 
 function applePicking() {
     drawTree();
+    moveApple();
+    tree.basket.x = mouseX;
+    catchApple();
 }
 
 function makeBatter() {
@@ -180,12 +190,6 @@ function makeBatter() {
 function ovenCake() {
     drawOven();
     bakeCake();
-
-    // if (cake.colorCook.r <= cake.colorRaw.r) { cake.colorRaw.r -= 0.2; }
-    // if (cake.colorCook.g <= cake.colorRaw.g) { cake.colorRaw.g -= 0.2; }
-    // if (cake.colorCook.b <= cake.colorRaw.b) { cake.colorRaw.b -= 0.2; }
-
-
 
 }
 
@@ -210,64 +214,42 @@ function mousePressed() {
     //see when mouse is considered overlapping
     const mouseOverlap = (distance < apple.size / 2);
 
-    // check if the mouse is clicking on the apple
-    if (mouseOverlap && state === "applePick") {
-        apple.inBasket = true;
-        setTimeout(() => { state = "makeBatter" }, 1000); // after 1000 state gets changes to makeBatter game
-    }
-    else if (mouseOverlap && state === "makeBatter") {
+    // // check if the mouse is clicking on the apple
+    // if (mouseOverlap && state === "applePick") {
+    //     apple.inBasket = true;
+    //     setTimeout(() => { state = "makeBatter" }, 1000); // after 1000 state gets changes to makeBatter game
+    // }
+    // else 
+    if (mouseOverlap && state === "makeBatter") {
         apple.inMixingBowl = true;
         setTimeout(() => { state = "ovenTime" }, 1000); // after 1000 state gets changes to oven baking game
     }
 
 }
 
-/**
- * Displays the applePickingInstruction page
- */
-function applePickingInstruction() {
-    //game applePickingInstruction
-    push();
-    textAlign(CENTER, CENTER);
-    textSize(30);
-    background("pink");
-    fill("black");
-    textStyle(BOLD);
-    text("Bake your own apple cake!", canvas.width / 2, canvas.height / 3);
-    pop();
+function catchApple() {
+    //distance between the mouse and the center of the apple
+    const distance = dist(tree.basket.x + tree.basket.sizeWidth / 2, tree.basket.y, apple.x, apple.y);
+    //see when mouse is considered overlapping
+    const mouseOverlap = (distance <= apple.size / 2);
 
-    //instruction on how to start
-    push();
-    textAlign(CENTER, CENTER);
-    textSize(20);
-    text("(press \"s\" to start!)", canvas.width / 2, canvas.height / 2);
-    pop();
-
-    //instruction on how to play
-    push();
-    textAlign(CENTER, CENTER);
-    textSize(20);
-    text("Click on the apple to put it in your basket", canvas.width / 2, canvas.height - 150);
-    pop();
-
+    // check if the mouse is clicking on the apple
+    if (mouseOverlap && state === "applePick") {
+        apple.inBasket = true;
+        setTimeout(() => { state = "makeBatter" }, 1000); // after 1000 state gets changes to makeBatter game
+    }
 }
 
+function moveApple() {
+    //make apple fall
+    apple.y += apple.velocity.y;
 
-/**
- * Displays the game over screen
- */
-function gameOverScreen() {
-
-    push();
-    textAlign(CENTER, CENTER);
-    textSize(30);
-    background("PaleTurquoise");
-    fill("black");
-    textStyle(BOLD);
-    text("YOU MADE A CAKE YAY", canvas.width / 2, canvas.height / 2);
-    pop();
-
+    //when the apple touches the ground reset back up to the tree
+    if (apple.y >= tree.grass.y - apple.size / 2) {
+        apple.y = 100;
+    }
 }
+
 
 /**
  * Draw a apple tree with bascket
@@ -438,4 +420,51 @@ function drawOven() {
     textStyle(BOLD);
     text("Patiently wait for the cake to bake...", canvas.width / 2, canvas.height - 75);
     pop();
+}
+
+/**
+ * Displays the applePickingInstruction page
+ */
+function applePickingInstruction() {
+    //game applePickingInstruction
+    push();
+    textAlign(CENTER, CENTER);
+    textSize(30);
+    background("pink");
+    fill("black");
+    textStyle(BOLD);
+    text("Bake your own apple cake!", canvas.width / 2, canvas.height / 3);
+    pop();
+
+    //instruction on how to start
+    push();
+    textAlign(CENTER, CENTER);
+    textSize(20);
+    text("(press \"s\" to start!)", canvas.width / 2, canvas.height / 2);
+    pop();
+
+    //instruction on how to play
+    push();
+    textAlign(CENTER, CENTER);
+    textSize(20);
+    text("Click on the apple to put it in your basket", canvas.width / 2, canvas.height - 150);
+    pop();
+
+}
+
+
+/**
+ * Displays the game over screen
+ */
+function gameOverScreen() {
+
+    push();
+    textAlign(CENTER, CENTER);
+    textSize(30);
+    background("PaleTurquoise");
+    fill("black");
+    textStyle(BOLD);
+    text("YOU MADE A CAKE YAY", canvas.width / 2, canvas.height / 2);
+    pop();
+
 }
