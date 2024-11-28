@@ -66,9 +66,12 @@ const tree = {
 //apple
 const apple = {
     // position
-    x: tree.leaf.x - 140,
-    y: tree.leaf.y + 150,
-    // ellipse(apple.x - 140, apple.y + 150, apple.size);
+    // x: tree.leaf.x - 140,
+    // y: tree.leaf.y + 150,
+
+    y: 440,
+    x: 400,
+
     //size
     size: 60,
 
@@ -78,11 +81,9 @@ const apple = {
     isRotten: false,
     inBasket: false,
     inMixingBowl: false,
+    dragging: false,
 
-    velocity: {
-        x: 0,
-        y: 1.9,
-    },
+    speed: 3,
 
 };
 
@@ -178,13 +179,24 @@ function keyPressed() {
 
 function applePicking() {
     drawTree();
-    moveApple();
+    setTimeout(moveApple, 1000);
+    // moveApple();
+    //move basket on the x axis
     tree.basket.x = mouseX;
     catchApple();
 }
 
 function makeBatter() {
     drawKitchen();
+
+
+    if (apple.dragging) {
+        apple.x = mouseX;
+        apple.y = mouseY;
+    } else {
+        // apple.y = 440;
+        // apple.x = 400;
+    }
 }
 
 function ovenCake() {
@@ -214,23 +226,31 @@ function mousePressed() {
     //see when mouse is considered overlapping
     const mouseOverlap = (distance < apple.size / 2);
 
-    // // check if the mouse is clicking on the apple
-    // if (mouseOverlap && state === "applePick") {
-    //     apple.inBasket = true;
-    //     setTimeout(() => { state = "makeBatter" }, 1000); // after 1000 state gets changes to makeBatter game
-    // }
-    // else 
     if (mouseOverlap && state === "makeBatter") {
-        apple.inMixingBowl = true;
-        setTimeout(() => { state = "ovenTime" }, 1000); // after 1000 state gets changes to oven baking game
+        apple.dragging = true;
+
+        // setTimeout(() => { state = "ovenTime" }, 1000); // after 1000 state gets changes to oven baking game
     }
 
 }
 
-function catchApple() {
+function mouseReleased() {
+    apple.dragging = false;
+
     //distance between the mouse and the center of the apple
-    const distance = dist(tree.basket.x + tree.basket.sizeWidth / 2, tree.basket.y, apple.x, apple.y);
+    const distance = dist(mixingBowl.x + mixingBowl.y, apple.x, apple.y);
     //see when mouse is considered overlapping
+    const appleOverlapMixingBowl = (distance <= apple.size / 2);
+
+    if (appleOverlapMixingBowl) {
+        setTimeout(() => { state = "ovenTime" }, 1000); // after 1000 state gets changes to oven baking game
+    }
+}
+
+function catchApple() {
+    //distance between the apple and the center of the basket
+    const distance = dist(tree.basket.x + tree.basket.sizeWidth / 2, tree.basket.y, apple.x, apple.y);
+    //see when basket and apple is considered overlapping
     const mouseOverlap = (distance <= apple.size / 2);
 
     // check if the mouse is clicking on the apple
@@ -242,7 +262,7 @@ function catchApple() {
 
 function moveApple() {
     //make apple fall
-    apple.y += apple.velocity.y;
+    apple.y += apple.speed;
 
     //when the apple touches the ground reset back up to the tree
     if (apple.y >= tree.grass.y - apple.size / 2) {
@@ -280,6 +300,8 @@ function drawTree() {
     rect(tree.grass.x, tree.grass.y, tree.grass.sizeWidth, tree.grass.sizeHeight);
     pop();
 
+
+
     // apple in tree
     if (!apple.inBasket) {
         push();
@@ -308,8 +330,8 @@ function drawTree() {
  * Draw a kitchen table with apple and a bowl of cake batter
  */
 function drawKitchen() {
-    apple.y = 440;
-    apple.x = 400;
+    // apple.y = 440;
+    // apple.x = 400;
 
     background("bisque");
 
