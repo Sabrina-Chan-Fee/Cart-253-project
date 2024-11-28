@@ -100,10 +100,12 @@ const cake = {
     x: canvas.width / 3,
     y: canvas.height / 2.5,
 
+    bakedness: 0,
+
     //size
     size: {
         width: 200,
-        hight: 150,
+        height: 150,
     },
 
     // color
@@ -177,28 +179,26 @@ function makeBatter() {
 
 function ovenCake() {
     drawOven();
-    // cookCake();
+    bakeCake();
 
-    setTimeout(() => {
-        while (cake.colorCook.r < cake.colorRaw.r && cake.colorCook.g < cake.colorRaw.g && cake.colorCook.b < cake.colorRaw.b) {
-            if (cake.colorCook.r != cake.colorRaw.r) { cake.colorRaw.r -= 0.2; }
-            if (cake.colorCook.g != cake.colorRaw.g) { cake.colorRaw.g -= 0.2; }
-            if (cake.colorCook.b != cake.colorRaw.b) { cake.colorRaw.b -= 0.2; }
-            console.log("loop");
-        }
-        setTimeout(() => { state = "gameOver" }, 1000);
-    }, 1000);
+    // if (cake.colorCook.r <= cake.colorRaw.r) { cake.colorRaw.r -= 0.2; }
+    // if (cake.colorCook.g <= cake.colorRaw.g) { cake.colorRaw.g -= 0.2; }
+    // if (cake.colorCook.b <= cake.colorRaw.b) { cake.colorRaw.b -= 0.2; }
+
+
 
 }
 
-function cookCake() {
-    // while (cake.colorCook.r != cake.colorRaw.r && cake.colorCook.g != cake.colorRaw.g && cake.colorCook.b != cake.colorRaw.b) {
-    //     if (cake.colorCook.r != cake.colorRaw.r) { cake.colorRaw.r -= 1; }
-    //     if (cake.colorCook.g != cake.colorRaw.g) { cake.colorRaw.g -= 1; }
-    //     if (cake.colorCook.b != cake.colorRaw.b) { cake.colorRaw.b -= 1; }
-    //     console.log("loop");
-    // }
-    console.log("finish");
+function bakeCake() {
+    cake.bakedness += 0.005;
+
+    cake.colorRaw.r = map(cake.bakedness, 0, 1, cake.colorRaw.r, cake.colorCook.r);
+    cake.colorRaw.g = map(cake.bakedness, 0, 1, cake.colorRaw.g, cake.colorCook.g);
+    cake.colorRaw.b = map(cake.bakedness, 0, 1, cake.colorRaw.b, cake.colorCook.b);
+
+    if (cake.bakedness >= 1) {
+        state = "gameOver";
+    }
 }
 /**
  * Check to see if mouse is overlaping with apple
@@ -261,10 +261,10 @@ function gameOverScreen() {
     push();
     textAlign(CENTER, CENTER);
     textSize(30);
-    background("pale blue");
+    background("PaleTurquoise");
     fill("black");
     textStyle(BOLD);
-    text("YOU MADE A CAKE YAY", canvas.width / 2, canvas.height / 3);
+    text("YOU MADE A CAKE YAY", canvas.width / 2, canvas.height / 2);
     pop();
 
 }
@@ -427,7 +427,7 @@ function drawOven() {
     push();
     noStroke();
     fill(cake.colorRaw.r, cake.colorRaw.g, cake.colorRaw.b);
-    rect(cake.x, cake.y, cake.size.width, cake.size.hight);
+    rect(cake.x, cake.y, cake.size.width, cake.size.height);
     pop();
 
     //game notes
