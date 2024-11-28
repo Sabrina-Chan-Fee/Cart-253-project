@@ -163,8 +163,8 @@ const cake = {
 
 };
 
-let state = "applePickingInstruction";
-// let state = "ovenTime";
+// let state = "applePickingInstruction";
+let state = "ovenTime";
 
 let appleSeed = undefined;
 
@@ -252,9 +252,9 @@ function bakeCake() {
     cake.colorRaw.g = map(cake.bakedness, 0, 1, cake.colorRaw.g, cake.colorCook.g);
     cake.colorRaw.b = map(cake.bakedness, 0, 1, cake.colorRaw.b, cake.colorCook.b);
 
-    if (cake.bakedness >= 1) {
-        state = "gameOver";
-    }
+    // if (cake.bakedness >= 1) {
+    //     state = "gameOver";
+    // }
 }
 /**
  * Check to see if mouse is overlaping with apple
@@ -271,11 +271,12 @@ function mousePressed() {
     }
 
     //distance between the mouse and the center of the apple
-    const distanceFromMouseAndToggle = dist(mouseX, mouseY, toggle.x, toggle.y);
+    const distanceFromMouseAndToggle = dist(mouseX, mouseY, toggle.x + toggle.size.width / 2, toggle.y);
     //see when mouse is considered overlapping
-    const mouseOverlapToggle = (distanceFromMouseAndToggle < toggle.size / 2);
+    const mouseOverlapToggle = (distanceFromMouseAndToggle < toggle.size.width / 2 || distanceFromMouseAndToggle < toggle.size.height / 2);
 
     if (mouseOverlapToggle && state === "ovenTime") {
+        console.log("k");
         toggle.dragging = true;
     }
 
@@ -291,7 +292,7 @@ function mouseReleased() {
     //see when mouse is considered overlapping
     const appleOverlapMixingBowl = (distance <= mixingBowl.size / 2);
 
-    console.log(distance);
+
     if (appleOverlapMixingBowl) {
         apple.inMixingBowl = true;
         setTimeout(() => { state = "ovenTime" }, 1000); // after 1000 state gets changes to oven baking game
