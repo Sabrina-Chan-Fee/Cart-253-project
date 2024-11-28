@@ -69,7 +69,7 @@ const apple = {
     // x: tree.leaf.x - 140,
     // y: tree.leaf.y + 150,
 
-    y: 440,
+    y: 250,
     x: 400,
 
     //size
@@ -82,6 +82,7 @@ const apple = {
     inBasket: false,
     inMixingBowl: false,
     dragging: false,
+
 
     speed: 3,
 
@@ -98,6 +99,38 @@ const mixingBowl = {
 
     // color
     color: "#DEB887",
+};
+
+//Temperature slide
+const ovenTemperature = {
+    // position
+    x: canvas.width / 6,
+    y: canvas.height / 1.3,
+
+    //size
+    size: {
+        height: 40,
+        width: 400,
+    },
+    // color
+    color: "#2b0900",
+
+};
+
+//Temperature slide toggle
+const toggle = {
+    // position
+    x: canvas.width / 6,
+    y: canvas.height / 1.3,
+
+    //size
+    size: {
+        height: 40,
+        width: 40,
+    },
+    // color
+    color: "#ff0000",
+
 };
 
 //Mixing Bowl
@@ -132,9 +165,13 @@ const cake = {
 let state = "applePickingInstruction";
 // let state = "ovenTime";
 
+let appleSeed = undefined;
+
 //create the canvas
 function setup() {
     createCanvas(canvas.width, canvas.height);
+    //give value to apple seed to draw the apple pieces in the cake batter game
+    appleSeed = random(1, 100);
 }
 
 /**
@@ -180,7 +217,7 @@ function keyPressed() {
 function applePicking() {
     drawTree();
     setTimeout(moveApple, 1000);
-    // moveApple();
+
     //move basket on the x axis
     tree.basket.x = mouseX;
     catchApple();
@@ -238,11 +275,13 @@ function mouseReleased() {
     apple.dragging = false;
 
     //distance between the mouse and the center of the apple
-    const distance = dist(mixingBowl.x + mixingBowl.y, apple.x, apple.y);
+    const distance = dist(mixingBowl.x, mixingBowl.y, apple.x, apple.y);
     //see when mouse is considered overlapping
-    const appleOverlapMixingBowl = (distance <= apple.size / 2);
+    const appleOverlapMixingBowl = (distance <= mixingBowl.size / 2);
 
+    console.log(distance);
     if (appleOverlapMixingBowl) {
+        apple.inMixingBowl = true;
         setTimeout(() => { state = "ovenTime" }, 1000); // after 1000 state gets changes to oven baking game
     }
 }
@@ -381,16 +420,21 @@ function drawKitchen() {
         ellipse(apple.x, apple.y, apple.size);
         pop();
     } else {
-        console.log("hello");
-        //change location of apple to be in the bowl
+        //change apples to mini apple pieces
         apple.y = mixingBowl.y;
         apple.x = mixingBowl.x;
-        //apple
-        push();
-        noStroke();
-        fill(apple.color);
-        ellipse(apple.x, apple.y, apple.size);
-        pop();
+        //apple pieces
+        randomSeed(appleSeed);
+        for (let i = 0; i < 7; i++) {
+            let x = random(-60, 60);
+            let y = random(-60, 60);
+            push();
+            noStroke();
+            fill(apple.color);
+            ellipse(apple.x + x, apple.y + y, 20);
+            pop();
+        }
+
     }
 }
 
@@ -434,9 +478,23 @@ function drawOven() {
     rect(cake.x, cake.y, cake.size.width, cake.size.height);
     pop();
 
+    //temperature bar
+    push();
+    noStroke();
+    fill(ovenTemperature.color);
+    rect(ovenTemperature.x, ovenTemperature.y, ovenTemperature.size.width, ovenTemperature.size.height);
+    pop();
+
+    //temperature toggle
+    push();
+    noStroke();
+    fill(toggle.color);
+    rect(toggle.x, toggle.y, toggle.size.width, toggle.size.height);
+    pop();
+
     //game notes
     push();
-    textAlign(CENTER, BASELINE);
+    textAlign(CENTER, TOP);
     textSize(25);
     fill("black");
     textStyle(BOLD);
