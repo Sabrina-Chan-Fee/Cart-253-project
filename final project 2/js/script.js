@@ -115,6 +115,13 @@ const ovenTemperature = {
     // color
     color: "#2b0900",
 
+    temperatureGoal: {
+        x: canvas.width / 6 + 300,
+        y: canvas.height / 1.3,
+        height: 40,
+        width: 40,
+    },
+
 };
 
 //Temperature slide toggle
@@ -131,6 +138,7 @@ const toggle = {
     // color
     color: "#ff0000",
     dragging: false,
+    isAtRightTemp: false,
 
 };
 
@@ -236,25 +244,46 @@ function makeBatter() {
 
 function ovenCake() {
     drawOven();
-    bakeCake();
 
+    //CHANGE TOGGLE FEAUTRE => IF TOGGLE IS IN THE RIGHT ZONE START THE COOKING, USER DRAG TOGGLE TO RIGHT PLACE
+
+    // const ToggleOverlapTempGoal = flase;
     //drag toggle left to right 
     if (toggle.dragging) {
         toggle.x = mouseX;
+
     }
+    // distance between the mouse and the center of the apple
+    const distanceFromToggleAndTempGoal = ovenTemperature.temperatureGoal.x - toggle.x;
+    //see when mouse is considered overlapping
+    console.log(distanceFromToggleAndTempGoal);
+    if (distanceFromToggleAndTempGoal < 10 && distanceFromToggleAndTempGoal > -10) {
+        setTimeout(() => { toggle.isAtRightTemp = true }, 500);
+
+        setTimeout(bakeCake, 1000);
+    }
+
+
+
+
 
 }
 
 function bakeCake() {
-    cake.bakedness += 0.005;
+
+    cake.bakedness += 0.01;
+    // }
 
     cake.colorRaw.r = map(cake.bakedness, 0, 1, cake.colorRaw.r, cake.colorCook.r);
     cake.colorRaw.g = map(cake.bakedness, 0, 1, cake.colorRaw.g, cake.colorCook.g);
     cake.colorRaw.b = map(cake.bakedness, 0, 1, cake.colorRaw.b, cake.colorCook.b);
 
-    // if (cake.bakedness >= 1) {
-    //     state = "gameOver";
-    // }
+    if (cake.bakedness >= 1) {
+        toggle.dragging = false;
+        // state = "gameOver";
+        setTimeout(() => { state = "gameOver" }, 500);
+
+    }
 }
 /**
  * Check to see if mouse is overlaping with apple
@@ -271,7 +300,7 @@ function mousePressed() {
     }
 
     //distance between the mouse and the center of the apple
-    const distanceFromMouseAndToggle = dist(mouseX, mouseY, toggle.x + toggle.size.width / 2, toggle.y);
+    const distanceFromMouseAndToggle = dist(mouseX, mouseY, toggle.x + toggle.size.width / 2, toggle.y + toggle.size.height / 2);
     //see when mouse is considered overlapping
     const mouseOverlapToggle = (distanceFromMouseAndToggle < toggle.size.width / 2 || distanceFromMouseAndToggle < toggle.size.height / 2);
 
@@ -297,6 +326,7 @@ function mouseReleased() {
         apple.inMixingBowl = true;
         setTimeout(() => { state = "ovenTime" }, 1000); // after 1000 state gets changes to oven baking game
     }
+
 
     toggle.dragging = false;
 
@@ -503,6 +533,13 @@ function drawOven() {
     rect(ovenTemperature.x, ovenTemperature.y, ovenTemperature.size.width, ovenTemperature.size.height);
     pop();
 
+    //temperature goal
+    push();
+    noStroke();
+    fill("green");
+    rect(ovenTemperature.temperatureGoal.x, ovenTemperature.temperatureGoal.y, ovenTemperature.temperatureGoal.width, ovenTemperature.temperatureGoal.height);
+    pop();
+
     //temperature toggle
     push();
     noStroke();
@@ -510,14 +547,27 @@ function drawOven() {
     rect(toggle.x, toggle.y, toggle.size.width, toggle.size.height);
     pop();
 
-    //game notes
-    push();
-    textAlign(CENTER, TOP);
-    textSize(25);
-    fill("black");
-    textStyle(BOLD);
-    text("Patiently wait for the cake to bake...", canvas.width / 2, canvas.height - 75);
-    pop();
+    if (toggle.isAtRightTemp) {
+        //game notes
+        push();
+        textAlign(CENTER, TOP);
+        textSize(25);
+        fill("black");
+        textStyle(BOLD);
+        text("Now patiently wait for the cake to bake...", canvas.width / 2, canvas.height - 75);
+        pop();
+    }
+    else {
+        //game notes
+        push();
+        textAlign(CENTER, TOP);
+        textSize(25);
+        fill("black");
+        textStyle(BOLD);
+        text("Move red toggle to the right temperature", canvas.width / 2, canvas.height - 75);
+        pop();
+    }
+
 }
 
 /**
