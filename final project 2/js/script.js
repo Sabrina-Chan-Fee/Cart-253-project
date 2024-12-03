@@ -5,7 +5,9 @@
  * A game where the player picks apples, make a cake batter and bakes a cake
  * 
  * Controls: 
- * - 
+ * - slide mouse left to right to move basket and cath the falling apple
+ * - click and drag apple into the cake batter 
+ * - click and drag with the mouse to move the toggle and set the oven to the right temperature
  * 
  * Uses:
  * p5.js
@@ -21,7 +23,7 @@ const canvas = {
     height: 600,
 };
 
-//tree
+//tree : leaf, tree trunk, grass, basket
 const tree = {
 
     leaf: {
@@ -66,9 +68,6 @@ const tree = {
 //apple
 const apple = {
     // position
-    // x: tree.leaf.x - 140,
-    // y: tree.leaf.y + 150,
-
     y: 250,
     x: 400,
 
@@ -83,9 +82,7 @@ const apple = {
     inMixingBowl: false,
     dragging: false,
 
-
     speed: 3,
-
 };
 
 //Mixing Bowl
@@ -115,6 +112,7 @@ const ovenTemperature = {
     // color
     color: "#2b0900",
 
+    //oven temp goal
     temperatureGoal: {
         x: canvas.width / 6 + 300,
         y: canvas.height / 1.3,
@@ -156,13 +154,14 @@ const cake = {
         height: 150,
     },
 
-    // color
+    // color of raw cake
     colorRaw: {
         r: 222,
         g: 184,
         b: 135,
     },
 
+    //color if baked cake
     colorCook: {
         r: 154,
         g: 88,
@@ -172,7 +171,6 @@ const cake = {
 };
 
 let state = "applePickingInstruction";
-// let state = "ovenTime";
 
 let appleSeed = undefined;
 
@@ -195,8 +193,6 @@ function draw() {
     else if (state === "applePick") {
         //player picks apple from the tree
         applePicking();
-
-
     }
     else if (state === "makeBatter") {
         //make cake batter game
@@ -223,6 +219,7 @@ function keyPressed() {
 
 }
 
+// let apple fall and let user catch fallen apple using basket
 function applePicking() {
     drawTree();
     setTimeout(moveApple, 1000);
@@ -232,6 +229,7 @@ function applePicking() {
     catchApple();
 }
 
+//click and drag apple into the cake batter
 function makeBatter() {
     drawKitchen();
 
@@ -242,51 +240,42 @@ function makeBatter() {
     }
 }
 
+//click and drag the toggle to the right oven temp and watch the cake bake
 function ovenCake() {
     drawOven();
 
-    //CHANGE TOGGLE FEAUTRE => IF TOGGLE IS IN THE RIGHT ZONE START THE COOKING, USER DRAG TOGGLE TO RIGHT PLACE
-
-    // const ToggleOverlapTempGoal = flase;
     //drag toggle left to right 
     if (toggle.dragging) {
         toggle.x = mouseX;
-
     }
     // distance between the mouse and the center of the apple
     const distanceFromToggleAndTempGoal = ovenTemperature.temperatureGoal.x - toggle.x;
-    //see when mouse is considered overlapping
-    console.log(distanceFromToggleAndTempGoal);
+    //once the correct temp is set start baking the cake
     if (distanceFromToggleAndTempGoal < 10 && distanceFromToggleAndTempGoal > -10) {
         setTimeout(() => { toggle.isAtRightTemp = true }, 500);
-
         setTimeout(bakeCake, 1000);
     }
 
-
-
-
-
 }
 
+//change color of bake as it bakes
 function bakeCake() {
 
     cake.bakedness += 0.01;
-    // }
 
+    //change color
     cake.colorRaw.r = map(cake.bakedness, 0, 1, cake.colorRaw.r, cake.colorCook.r);
     cake.colorRaw.g = map(cake.bakedness, 0, 1, cake.colorRaw.g, cake.colorCook.g);
     cake.colorRaw.b = map(cake.bakedness, 0, 1, cake.colorRaw.b, cake.colorCook.b);
 
+    //once at the right color display game over message
     if (cake.bakedness >= 1) {
         toggle.dragging = false;
-        // state = "gameOver";
         setTimeout(() => { state = "gameOver" }, 500);
-
     }
 }
 /**
- * Check to see if mouse is overlaping with apple
+ * Be able to click and drag apple into the cake batter or click and drag toggle to set oven at right temp
  */
 function mousePressed() {
 
@@ -294,7 +283,7 @@ function mousePressed() {
     const distanceFromMouseAndApple = dist(mouseX, mouseY, apple.x, apple.y);
     //see when mouse is considered overlapping
     const mouseOverlapApple = (distanceFromMouseAndApple < apple.size / 2);
-
+    //drag apple into the cake batter
     if (mouseOverlapApple && state === "makeBatter") {
         apple.dragging = true;
     }
@@ -303,16 +292,13 @@ function mousePressed() {
     const distanceFromMouseAndToggle = dist(mouseX, mouseY, toggle.x + toggle.size.width / 2, toggle.y + toggle.size.height / 2);
     //see when mouse is considered overlapping
     const mouseOverlapToggle = (distanceFromMouseAndToggle < toggle.size.width / 2 || distanceFromMouseAndToggle < toggle.size.height / 2);
-
+    //drag toggle
     if (mouseOverlapToggle && state === "ovenTime") {
-        console.log("k");
         toggle.dragging = true;
     }
-
-
-
 }
 
+//stop dragging object when mouse is released
 function mouseReleased() {
     apple.dragging = false;
 
@@ -321,32 +307,31 @@ function mouseReleased() {
     //see when mouse is considered overlapping
     const appleOverlapMixingBowl = (distance <= mixingBowl.size / 2);
 
-
+    //stop dragging when mouse is released and apple is in the bowl
     if (appleOverlapMixingBowl) {
         apple.inMixingBowl = true;
         setTimeout(() => { state = "ovenTime" }, 1000); // after 1000 state gets changes to oven baking game
     }
-
-
+    //stop dragging when mouse is release
     toggle.dragging = false;
 
 }
 
-
-
+//catch apple with basket
 function catchApple() {
     //distance between the apple and the center of the basket
     const distance = dist(tree.basket.x + tree.basket.sizeWidth / 2, tree.basket.y, apple.x, apple.y);
     //see when basket and apple is considered overlapping
     const mouseOverlap = (distance <= apple.size / 2);
 
-    // check if the mouse is clicking on the apple
+    // check if the apple is in the basket
     if (mouseOverlap && state === "applePick") {
         apple.inBasket = true;
         setTimeout(() => { state = "makeBatter" }, 1000); // after 1000 state gets changes to makeBatter game
     }
 }
 
+//make apple fall from the tree
 function moveApple() {
     //make apple fall
     apple.y += apple.speed;
@@ -356,7 +341,6 @@ function moveApple() {
         apple.y = 100;
     }
 }
-
 
 /**
  * Draw a apple tree with bascket
@@ -411,7 +395,7 @@ function drawTree() {
     rect(tree.basket.x, tree.basket.y, tree.basket.sizeWidth, tree.basket.sizeHeight)
     pop();
 
-    //game notes
+    //game message
     push();
     textAlign(CENTER, TOP);
     textSize(25);
@@ -426,8 +410,6 @@ function drawTree() {
  * Draw a kitchen table with apple and a bowl of cake batter
  */
 function drawKitchen() {
-    // apple.y = 440;
-    // apple.x = 400;
 
     background("bisque");
 
@@ -461,7 +443,7 @@ function drawKitchen() {
     text("Click and drag the apple into the cake batter", canvas.width / 2, canvas.height - 75);
     pop();
 
-
+    //display apples on table
     if (!apple.inMixingBowl) {
         //apple stem
         push();
@@ -476,7 +458,7 @@ function drawKitchen() {
         fill(apple.color);
         ellipse(apple.x, apple.y, apple.size);
         pop();
-    } else {
+    } else {//display apple piece in batter
         //change apples to mini apple pieces
         apple.y = mixingBowl.y;
         apple.x = mixingBowl.x;
@@ -604,7 +586,7 @@ function applePickingInstruction() {
     push();
     textAlign(CENTER, CENTER);
     textSize(20);
-    text("Click on the apple to put it in your basket", canvas.width / 2, canvas.height - 150);
+    text("Catch apple with basket by sliding mouse left and right", canvas.width / 2, canvas.height - 150);
     pop();
 
 }
@@ -620,8 +602,8 @@ function gameOverScreen() {
     textSize(30);
     background("PaleTurquoise");
     fill("black");
-    textStyle(BOLD);
-    text("YOU MADE A CAKE YAY", canvas.width / 2, canvas.height / 2);
+    text("YOU MADE A CAKE YAY\n\n Hope it didn't take \n too much of your time", canvas.width / 2, canvas.height / 2);
     pop();
+
 
 }

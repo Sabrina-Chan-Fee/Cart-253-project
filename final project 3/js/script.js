@@ -131,9 +131,6 @@ const cakeBatter = {
         r: 180,
         g: 150,
         b: 120,
-        // r: 205,
-        // g: 160,
-        // b: 156,
     },
 
     mixingCompletion: 0,
