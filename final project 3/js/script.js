@@ -5,7 +5,9 @@
  * A game where the player picks apples, make a cake batter and bakes a cake
  * 
  * Controls: 
- * - 
+ * - slid emouse left to right to move basket and cath the falling apple
+ * - click and drag apple into the cake batter nad move mouse around to mix
+ * - click and drag with the mouse to move the toggle and set the oven to the right temperature
  * 
  * Uses:
  * p5.js
@@ -21,7 +23,7 @@ const canvas = {
     height: 600,
 };
 
-//tree
+//tree : leaf, tree trunk, grass, basket
 const tree = {
 
     leaf: {
@@ -75,7 +77,6 @@ const apple = {
         unripe: 20,
     },
 
-
     // color Ripe red
     colorRipe: {
         r: 255,
@@ -92,13 +93,12 @@ const apple = {
 
     ripeness: 0,
     growth: 0,
+    speed: 3,
 
     isRotten: false,
     inBasket: false,
     inMixingBowl: false,
     dragging: false,
-
-    speed: 3,
 
     stateOfApple: "growing" //growing/ripenning/falling
 
@@ -137,7 +137,7 @@ const cakeBatter = {
     },
 
     mixingCompletion: 0,
-    state: "no_mixing", //either mixing, no mixing, keep mixing
+    state: "no_mixing", //either mixing, no_mixing, keep_mixing
 
 };
 
@@ -188,8 +188,6 @@ const cake = {
     x: canvas.width / 3,
     y: canvas.height / 2.5,
 
-    bakedness: 0,
-
     //size
     size: {
         width: 200,
@@ -208,13 +206,11 @@ const cake = {
         g: 88,
         b: 23,
     },
-
-    state: "raw" //either be raw, baking, willItBurn
+    bakedness: 0,
+    state: "raw" //either be raw, baking
 };
 
 let state = "applePickingInstruction";
-// let state = "ovenTime";
-
 let appleSeed = undefined;
 
 //create the canvas
@@ -246,7 +242,7 @@ function draw() {
         ovenCake();
     }
     else {
-        //display score
+        //display ending message
         gameOverScreen();
     }
 
@@ -271,9 +267,13 @@ function applePicking() {
 
     //when the apple is at the right size wait for apple to ripen and turn red
     if (apple.size.unripe >= apple.size.ripe) {
+        apple.stateOfApple = "ripening";
         ripenApple();
     }
-
+    //when apple is half way ripen displain falling message
+    if (apple.ripeness >= 0.5) {
+        (apple.stateOfApple = "falling");
+    }
     //once apple is red wait for it to fall of the tree so user can catch it
     if (apple.ripeness >= 1) {
         moveApple();
@@ -284,61 +284,70 @@ function applePicking() {
     tree.basket.x = mouseX - tree.basket.sizeWidth / 2;
 }
 
+//click and drag apple into the cake batter then mix the cake batter
 function makeBatter() {
     drawKitchen();
-    // mixingCakeBatterWithMouse();
+
     // drag apple into the bowl
     if (apple.dragging) {
         apple.x = mouseX;
         apple.y = mouseY;
     }
-    if (apple.inMixingBowl) {
 
+    //mix apple and cake batter into the bowl
+    if (apple.inMixingBowl) {
         cakeBatter.state = "mixing";
         mixingCakeBatterWithMouse()
     }
+
+    //once cake batter has been mixed enought start the oven baking game
     if (cakeBatter.mixingCompletion >= 1) {
         setTimeout(() => { state = "ovenTime" }, 100);
     }
 }
 
+//click and drag the toggle to the right oven temp and watch the cake bake
 function ovenCake() {
+    //draw the oven 
     drawOven();
 
-    //drag toggle left to right to set to the right temp
+    //drag toggle left to right to set oven to the right temp
     if (toggle.dragging) {
         toggle.x = mouseX;
     }
-    // distance between the mouse and the center of the apple
+    // distance between the toggle and the right oven temp
     const distanceFromToggleAndTempGoal = ovenTemperature.temperatureGoal.x - toggle.x;
-    //see when mouse is considered overlapping
 
+    //once the correct temp is set start baking the cake
     if (distanceFromToggleAndTempGoal < 10 && distanceFromToggleAndTempGoal > -10) {
         setTimeout(() => { toggle.isAtRightTemp = true }, 500);
-
         setTimeout(bakeCake, 1000);
     }
 
 }
 
+//change color of bake as it bakes
 function bakeCake() {
 
     cake.bakedness += 0.0005;
 
+    //change color
     cake.colorRaw.r = map(cake.bakedness, 0, 100, cake.colorRaw.r, cake.colorCook.r);
     cake.colorRaw.g = map(cake.bakedness, 0, 100, cake.colorRaw.g, cake.colorCook.g);
     cake.colorRaw.b = map(cake.bakedness, 0, 100, cake.colorRaw.b, cake.colorCook.b);
 
+    //once at the right color display game over message
     if (cake.bakedness >= 1) {
         toggle.dragging = false;
         setTimeout(() => { state = "gameOver" }, 500);
     }
+    //when half way baked display a baking message
     else if (cake.bakedness > 0.5) {
         cake.state = "baking";
     }
 }
 /**
- * Check to see if mouse is overlaping with apple
+ * Be able to click and drag apple into the cake batter or click and drag toggle to set oven at right temp
  */
 function mousePressed() {
 
@@ -346,7 +355,7 @@ function mousePressed() {
     const distanceFromMouseAndApple = dist(mouseX, mouseY, apple.x, apple.y);
     //see when mouse is considered overlapping
     const mouseOverlapApple = (distanceFromMouseAndApple < apple.size.ripe / 2);
-
+    //drag apple into the cake batter
     if (mouseOverlapApple && state === "makeBatter") {
         apple.dragging = true;
     }
@@ -355,13 +364,14 @@ function mousePressed() {
     const distanceFromMouseAndToggle = dist(mouseX, mouseY, toggle.x + toggle.size.width / 2, toggle.y + toggle.size.height / 2);
     //see when mouse is considered overlapping
     const mouseOverlapToggle = (distanceFromMouseAndToggle < toggle.size.width / 2 || distanceFromMouseAndToggle < toggle.size.height / 2);
-
+    //drag toggle
     if (mouseOverlapToggle && state === "ovenTime") {
         toggle.dragging = true;
     }
 
 }
 
+//stop dragging object when mouse is released
 function mouseReleased() {
     apple.dragging = false;
 
@@ -369,16 +379,18 @@ function mouseReleased() {
     const distance = dist(cakeBatter.x, cakeBatter.y, apple.x, apple.y);
     //see when mouse is considered overlapping
     const appleOverlapCakeBatter = (distance <= cakeBatter.size / 2);
-
+    //stop dragging when mouse is released and apple is in the bowl
     if (appleOverlapCakeBatter) {
         apple.inMixingBowl = true;
     }
+
+    //stop dragging when mouse is release
     toggle.dragging = false;
 
 }
 
 /**
- * Change to various cake batter color while user has added all the ingredients and is mixing the bowl
+ * Change to various cake batter color while user is mixing the bowl
  */
 function mixingCakeBatterWithMouse() {
 
@@ -397,26 +409,28 @@ function mixingCakeBatterWithMouse() {
         cakeBatter.color.g = map(mouseX, 0, canvas.height, 0, 100);
         cakeBatter.color.b = map(mouseY, 0, canvas.width, 0, 50);
     }
+    //display keep_mixing message once user is half way into the mixing
     if (cakeBatter.mixingCompletion >= 0.5) {
         cakeBatter.state = "keep_mixing";
     }
 
 }
 
+//catch apple with basket
 function catchApple() {
     //distance between the apple and the center of the basket
     const distance = dist(tree.basket.x + tree.basket.sizeWidth / 2, tree.basket.y, apple.x, apple.y);
     //see when basket and apple is considered overlapping
     const mouseOverlap = (distance <= apple.size.ripe / 2);
 
-    console.log(mouseOverlap);
-    // check if the mouse is clicking on the apple
+    // check if the apple is in the basket
     if (mouseOverlap && state === "applePick") {
         apple.inBasket = true;
-        setTimeout(() => { state = "makeBatter" }, 1000); // after 1000 state gets changes to makeBatter game
+        setTimeout(() => { state = "makeBatter" }, 1000); //when apple was caught start the cake batter game
     }
 }
 
+//make apple fall from the tree
 function moveApple() {
     //make apple fall
     apple.y += apple.speed;
@@ -435,18 +449,10 @@ function growApple() {
 
 // Change color of apple from green to red
 function ripenApple() {
-    apple.stateOfApple = "ripening";
-
     apple.ripeness += 0.002;
     apple.colorUnripe.r = map(apple.ripeness, 0, 1, apple.colorUnripe.r, apple.colorRipe.r);
     apple.colorUnripe.g = map(apple.ripeness, 0, 1, apple.colorUnripe.g, apple.colorRipe.g);
     apple.colorUnripe.b = map(apple.ripeness, 0, 1, apple.colorUnripe.b, apple.colorRipe.b);
-
-    if (apple.ripeness >= 0.5) {
-        (apple.stateOfApple = "falling");
-    }
-
-
 }
 
 
@@ -471,15 +477,12 @@ function drawTree() {
     ellipse(tree.leaf.x, tree.leaf.y, tree.leaf.sizeWidth, tree.leaf.sizeHeight);
     pop();
 
-
     //grass
     push();
     noStroke();
     fill("green");
     rect(tree.grass.x, tree.grass.y, tree.grass.sizeWidth, tree.grass.sizeHeight);
     pop();
-
-
 
     // apple in tree
     if (!apple.inBasket) {
@@ -503,7 +506,7 @@ function drawTree() {
     rect(tree.basket.x, tree.basket.y, tree.basket.sizeWidth, tree.basket.sizeHeight)
     pop();
 
-    //game notes
+    //game message depending on state
     if (apple.stateOfApple == "growing") {
         push();
         textAlign(CENTER, TOP);
@@ -519,7 +522,7 @@ function drawTree() {
         fill("white");
         text("let's wait a little while longer", canvas.width / 2, canvas.height - 40);
         pop();
-    } else {
+    } else {//apple.stateOfApple == "falling"
         push();
         textAlign(CENTER, TOP);
         textSize(25);
@@ -542,13 +545,6 @@ function drawKitchen() {
     ellipse(mixingBowl.x, mixingBowl.y, mixingBowl.size);
     pop();
 
-    //bowl
-    push();
-    noStroke();
-    fill(mixingBowl.color);
-    ellipse(mixingBowl.x, mixingBowl.y, mixingBowl.size);
-    pop();
-
     //batter
     push();
     noStroke();
@@ -556,7 +552,7 @@ function drawKitchen() {
     ellipse(cakeBatter.x, cakeBatter.y, cakeBatter.size);
     pop();
 
-    //game notes
+    //game message
     if (cakeBatter.state == "mixing") {
         push();
         textAlign(CENTER, BASELINE);
@@ -582,7 +578,7 @@ function drawKitchen() {
         pop();
     }
 
-
+    //display apples on table
     if (!apple.inMixingBowl) {
         //apple stem
         push();
@@ -597,7 +593,7 @@ function drawKitchen() {
         fill(apple.colorRipe.r, apple.colorRipe.g, apple.colorRipe.b);
         ellipse(apple.x, apple.y, apple.size.ripe);
         pop();
-    } else {
+    } else { //display apple piece in batter
         //change apples to mini apple pieces
         apple.y = mixingBowl.y;
         apple.x = mixingBowl.x;
@@ -677,6 +673,7 @@ function drawOven() {
     rect(toggle.x, toggle.y, toggle.size.width, toggle.size.height);
     pop();
 
+    //game message depending on the state
     if (toggle.isAtRightTemp && cake.state == "raw") {
         //game notes
         push();
@@ -732,7 +729,7 @@ function applePickingInstruction() {
     push();
     textAlign(CENTER, CENTER);
     textSize(20);
-    text("Click on the apple to put it in your basket", canvas.width / 2, canvas.height - 150);
+    text("Catch apple with basket by sliding mouse left and right", canvas.width / 2, canvas.height - 150);
     pop();
 
 }
@@ -748,8 +745,7 @@ function gameOverScreen() {
     textSize(30);
     background("PaleTurquoise");
     fill("black");
-    textStyle(BOLD);
-    text("YOU MADE A CAKE YAY", canvas.width / 2, canvas.height / 2);
+    text("YOU MADE A CAKE YAY\n Hope it didn't take too muchof your time", canvas.width / 2, canvas.height / 2);
     pop();
 
 }
