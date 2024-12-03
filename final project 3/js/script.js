@@ -92,6 +92,8 @@ const apple = {
         b: 0,
     },
 
+    ripeness: 0,
+    growth: 0,
     isRotten: false,
     inBasket: false,
     inMixingBowl: false,
@@ -238,12 +240,26 @@ function keyPressed() {
 }
 
 function applePicking() {
+    //draw the tree and apple
     drawTree();
-    setTimeout(moveApple, 1000);
+
+    //make apple grow to the right size
+    setTimeout(growApple, 1000);
+
+    //when the apple is at the right size wait for apple to ripen and turn red
+    if (apple.size.unripe >= apple.size.ripe) {
+        ripenApple();
+    }
+
+    //once apple is red wait for it to fall of the tree so user can catch it
+    if (apple.ripeness >= 1) {
+        moveApple();
+        catchApple();
+
+    }
 
     //move basket on the x axis
     tree.basket.x = mouseX;
-    catchApple();
 }
 
 function makeBatter() {
@@ -354,6 +370,7 @@ function catchApple() {
     //see when basket and apple is considered overlapping
     const mouseOverlap = (distance <= apple.size.ripe / 2);
 
+    console.log(mouseOverlap);
     // check if the mouse is clicking on the apple
     if (mouseOverlap && state === "applePick") {
         apple.inBasket = true;
@@ -369,6 +386,21 @@ function moveApple() {
     if (apple.y >= tree.grass.y - apple.size.ripe / 2) {
         apple.y = 100;
     }
+}
+
+//change apple size from small unripe to ripe
+function growApple() {
+    apple.growth += 0.001
+    apple.size.unripe = map(apple.growth, 0, 1, apple.size.unripe, apple.size.ripe);
+}
+
+// Change color of apple from green to red
+function ripenApple() {
+    apple.ripeness += 0.001;
+
+    apple.colorUnripe.r = map(apple.ripeness, 0, 1, apple.colorUnripe.r, apple.colorRipe.r);
+    apple.colorUnripe.g = map(apple.ripeness, 0, 1, apple.colorUnripe.g, apple.colorRipe.g);
+    apple.colorUnripe.b = map(apple.ripeness, 0, 1, apple.colorUnripe.b, apple.colorRipe.b);
 }
 
 
@@ -407,14 +439,14 @@ function drawTree() {
     if (!apple.inBasket) {
         push();
         noStroke();
-        fill(apple.color.r, apple.color.g, apple.color.b);
-        ellipse(apple.x, apple.y, apple.size.ripe);
+        fill(apple.colorUnripe.r, apple.colorUnripe.g, apple.colorUnripe.b);
+        ellipse(apple.x, apple.y, apple.size.unripe);
         pop();
     } else {
         push();
         noStroke();
-        fill(apple.color.r, apple.color.g, apple.color.b);
-        ellipse(tree.basket.x + 50, tree.basket.y, apple.size.ripe);
+        fill(apple.colorRipe.r, apple.colorRipe.g, apple.colorRipe.b);
+        ellipse(tree.basket.x + 50, tree.basket.y, apple.size.unripe);
         pop();
     }
 
@@ -487,7 +519,7 @@ function drawKitchen() {
         //apple
         push();
         noStroke();
-        fill(apple.color.r, apple.color.g, apple.color.b);
+        fill(apple.colorRipe.r, apple.colorRipe.g, apple.colorRipe.b);
         ellipse(apple.x, apple.y, apple.size.ripe);
         pop();
     } else {
@@ -501,7 +533,7 @@ function drawKitchen() {
             let y = random(-60, 60);
             push();
             noStroke();
-            fill(apple.color.r, apple.color.g, apple.color.b);
+            fill(apple.colorRipe.r, apple.colorRipe.g, apple.colorRipe.b);
             ellipse(apple.x + x, apple.y + y, 20);
             pop();
         }
