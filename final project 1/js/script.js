@@ -5,7 +5,8 @@
  * A game where the player picks apples, make a cake batter and bakes a cake
  * 
  * Controls: 
- * - 
+ * - click apple to put it in basket
+ * - click apple into the cake batter 
  * 
  * Uses:
  * p5.js
@@ -21,7 +22,7 @@ const canvas = {
     height: 600,
 };
 
-//tree
+//tree : leaf, tree trunk, grass, basket
 const tree = {
 
     leaf: {
@@ -68,7 +69,7 @@ const apple = {
     // position
     x: tree.leaf.x - 140,
     y: tree.leaf.y + 150,
-    // ellipse(apple.x - 140, apple.y + 150, apple.size);
+
     //size
     size: 60,
 
@@ -108,13 +109,14 @@ const cake = {
         height: 150,
     },
 
-    // color
+    // color of raw cake
     colorRaw: {
         r: 222,
         g: 184,
         b: 135,
     },
 
+    //color if baked cake
     colorCook: {
         r: 154,
         g: 88,
@@ -124,7 +126,7 @@ const cake = {
 };
 
 let state = "applePickingInstruction";
-// let state = "ovenTime";
+
 
 //create the canvas
 function setup() {
@@ -169,27 +171,32 @@ function keyPressed() {
 
 }
 
+// let user click apple to put in basket
 function applePicking() {
     drawTree();
 }
 
+//click apple to put it into the cake batter
 function makeBatter() {
     drawKitchen();
 }
 
+//watch bake turn golden brown when in the oven
 function ovenCake() {
     drawOven();
     bakeCake();
-
 }
+
+//change color of bake as it bakes
 
 function bakeCake() {
     cake.bakedness += 0.005;
-
+    //change color
     cake.colorRaw.r = map(cake.bakedness, 0, 1, cake.colorRaw.r, cake.colorCook.r);
     cake.colorRaw.g = map(cake.bakedness, 0, 1, cake.colorRaw.g, cake.colorCook.g);
     cake.colorRaw.b = map(cake.bakedness, 0, 1, cake.colorRaw.b, cake.colorCook.b);
 
+    //once at the right color display game over message
     if (cake.bakedness >= 1) {
         state = "gameOver";
     }
@@ -204,11 +211,12 @@ function mousePressed() {
     //see when mouse is considered overlapping
     const mouseOverlap = (distance < apple.size / 2);
 
-    // check if the mouse is clicking on the apple
+    // check if the mouse is clicking on the apple then put in the basket
     if (mouseOverlap && state === "applePick") {
         apple.inBasket = true;
         setTimeout(() => { state = "makeBatter" }, 1000); // after 1000 state gets changes to makeBatter game
     }
+    // check if the mouse is clicking on the apple then put in the bowl
     else if (mouseOverlap && state === "makeBatter") {
         apple.inMixingBowl = true;
         setTimeout(() => { state = "ovenTime" }, 1000); // after 1000 state gets changes to oven baking game
@@ -257,9 +265,9 @@ function gameOverScreen() {
     textSize(30);
     background("PaleTurquoise");
     fill("black");
-    textStyle(BOLD);
-    text("YOU MADE A CAKE YAY", canvas.width / 2, canvas.height / 2);
+    text("YOU MADE A CAKE YAY\n\n That was quite fast", canvas.width / 2, canvas.height / 2);
     pop();
+
 
 }
 
@@ -355,7 +363,7 @@ function drawKitchen() {
     text("Click on apple to add to the cake batter", canvas.width / 2, canvas.height - 75);
     pop();
 
-
+    //display apples on table
     if (!apple.inMixingBowl) {
         //apple stem
         push();
@@ -371,10 +379,10 @@ function drawKitchen() {
         ellipse(apple.x, apple.y, apple.size);
         pop();
     } else {
-        console.log("hello");
         //change location of apple to be in the bowl
         apple.y = mixingBowl.y;
         apple.x = mixingBowl.x;
+
         //apple
         push();
         noStroke();
