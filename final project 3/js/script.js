@@ -212,8 +212,8 @@ const cake = {
     state: "raw" //either be raw, baking, willItBurn
 };
 
-// let state = "applePickingInstruction";
-let state = "ovenTime";
+let state = "applePickingInstruction";
+// let state = "ovenTime";
 
 let appleSeed = undefined;
 
@@ -479,12 +479,7 @@ function drawTree() {
     rect(tree.grass.x, tree.grass.y, tree.grass.sizeWidth, tree.grass.sizeHeight);
     pop();
 
-    //basket
-    push();
-    noStroke();
-    fill("orange");
-    rect(tree.basket.x, tree.basket.y, tree.basket.sizeWidth, tree.basket.sizeHeight)
-    pop();
+
 
     // apple in tree
     if (!apple.inBasket) {
@@ -500,6 +495,13 @@ function drawTree() {
         ellipse(tree.basket.x + 50, tree.basket.y, apple.size.unripe);
         pop();
     }
+
+    //basket
+    push();
+    noStroke();
+    fill("orange");
+    rect(tree.basket.x, tree.basket.y, tree.basket.sizeWidth, tree.basket.sizeHeight)
+    pop();
 
     //game notes
     if (apple.stateOfApple == "growing") {
