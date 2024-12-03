@@ -131,7 +131,13 @@ const cakeBatter = {
         r: 180,
         g: 150,
         b: 120,
+        // r: 205,
+        // g: 160,
+        // b: 156,
     },
+
+    mixingCompletion: 0,
+    state: "no_mixing", //either mixing, no mixing, keep mixing
 
 };
 
@@ -279,11 +285,19 @@ function applePicking() {
 
 function makeBatter() {
     drawKitchen();
-    mixingCakeBatterWithMouse();
+    // mixingCakeBatterWithMouse();
     // drag apple into the bowl
     if (apple.dragging) {
         apple.x = mouseX;
         apple.y = mouseY;
+    }
+    if (apple.inMixingBowl) {
+
+        cakeBatter.state = "mixing";
+        mixingCakeBatterWithMouse()
+    }
+    if (cakeBatter.mixingCompletion >= 1) {
+        setTimeout(() => { state = "ovenTime" }, 100);
     }
 }
 
@@ -357,7 +371,7 @@ function mouseReleased() {
 
     if (appleOverlapCakeBatter) {
         apple.inMixingBowl = true;
-        // setTimeout(() => { state = "ovenTime" }, 1000); // after 1000 state gets changes to oven baking game
+
     }
 
     toggle.dragging = false;
@@ -378,12 +392,14 @@ function mixingCakeBatterWithMouse() {
 
     //if the mouse is moving in the bowl and all the ingredients have been added then change color
     if (mouseOverlapsCakeBatter && mouseIsMoving) {
-
+        cakeBatter.mixingCompletion += 0.001;
         //change color of batter when mixed
-        cakeBatter.color.r = map(mouseX, 0, canvas.width, 0, 250);
-        cakeBatter.color.g = map(mouseY, 0, canvas.height, 0, 250);
-        cakeBatter.color.b = map(mouseY, 0, canvas.width, 0, 25);
-
+        cakeBatter.color.r = map(mouseX, 0, canvas.width, 0, 240);
+        cakeBatter.color.g = map(mouseX, 0, canvas.height, 0, 100);
+        cakeBatter.color.b = map(mouseY, 0, canvas.width, 0, 50);
+    }
+    if (cakeBatter.mixingCompletion >= 0.5) {
+        cakeBatter.state = "keep_mixing";
     }
 
 }
@@ -430,6 +446,7 @@ function ripenApple() {
     if (apple.ripeness >= 0.5) {
         (apple.stateOfApple = "falling");
     }
+
 }
 
 
@@ -538,13 +555,30 @@ function drawKitchen() {
     pop();
 
     //game notes
-    push();
-    textAlign(CENTER, BASELINE);
-    textSize(25);
-    fill("black");
-    textStyle(BOLD);
-    text("Click and drag the apple into the cake batter", canvas.width / 2, canvas.height - 75);
-    pop();
+    if (cakeBatter.state == "mixing") {
+        push();
+        textAlign(CENTER, BASELINE);
+        textSize(25);
+        fill("black");
+        text("Move mouse to mix the batter", canvas.width / 2, canvas.height - 75);
+        pop();
+    }
+    else if (cakeBatter.state == "keep_mixing") {
+        push();
+        textAlign(CENTER, BASELINE);
+        textSize(25);
+        fill("black");
+        text("keep mixing for a long long time..", canvas.width / 2, canvas.height - 75);
+        pop();
+    }
+    else {
+        push();
+        textAlign(CENTER, BASELINE);
+        textSize(25);
+        fill("black");
+        text("Click and drag the apple into the cake batter", canvas.width / 2, canvas.height - 75);
+        pop();
+    }
 
 
     if (!apple.inMixingBowl) {
