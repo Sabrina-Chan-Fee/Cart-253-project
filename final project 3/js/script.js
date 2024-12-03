@@ -745,7 +745,7 @@ function gameOverScreen() {
     textSize(30);
     background("PaleTurquoise");
     fill("black");
-    text("YOU MADE A CAKE YAY\n Hope it didn't take too muchof your time", canvas.width / 2, canvas.height / 2);
+    text("YOU MADE A CAKE YAY\n\n Hope it didn't take \n too much of your time", canvas.width / 2, canvas.height / 2);
     pop();
 
 }
