@@ -73,10 +73,24 @@ const apple = {
     x: 400,
 
     //size
-    size: 60,
+    size: {
+        ripe: 60,
+        unripe: 20,
+    },
 
-    // color
-    color: "red",
+
+    // color Ripe
+    colorRipe: {
+        r: 255,
+        g: 0,
+        b: 0,
+    },
+
+    colorUnripe: {
+        r: 141,
+        g: 182,
+        b: 0,
+    },
 
     isRotten: false,
     inBasket: false,
@@ -293,7 +307,7 @@ function mousePressed() {
     //distance between the mouse and the center of the apple
     const distanceFromMouseAndApple = dist(mouseX, mouseY, apple.x, apple.y);
     //see when mouse is considered overlapping
-    const mouseOverlapApple = (distanceFromMouseAndApple < apple.size / 2);
+    const mouseOverlapApple = (distanceFromMouseAndApple < apple.size.ripe / 2);
 
     if (mouseOverlapApple && state === "makeBatter") {
         apple.dragging = true;
@@ -338,7 +352,7 @@ function catchApple() {
     //distance between the apple and the center of the basket
     const distance = dist(tree.basket.x + tree.basket.sizeWidth / 2, tree.basket.y, apple.x, apple.y);
     //see when basket and apple is considered overlapping
-    const mouseOverlap = (distance <= apple.size / 2);
+    const mouseOverlap = (distance <= apple.size.ripe / 2);
 
     // check if the mouse is clicking on the apple
     if (mouseOverlap && state === "applePick") {
@@ -352,7 +366,7 @@ function moveApple() {
     apple.y += apple.speed;
 
     //when the apple touches the ground reset back up to the tree
-    if (apple.y >= tree.grass.y - apple.size / 2) {
+    if (apple.y >= tree.grass.y - apple.size.ripe / 2) {
         apple.y = 100;
     }
 }
@@ -393,14 +407,14 @@ function drawTree() {
     if (!apple.inBasket) {
         push();
         noStroke();
-        fill(apple.color);
-        ellipse(apple.x, apple.y, apple.size);
+        fill(apple.color.r, apple.color.g, apple.color.b);
+        ellipse(apple.x, apple.y, apple.size.ripe);
         pop();
     } else {
         push();
         noStroke();
-        fill(apple.color);
-        ellipse(tree.basket.x + 50, tree.basket.y, apple.size);
+        fill(apple.color.r, apple.color.g, apple.color.b);
+        ellipse(tree.basket.x + 50, tree.basket.y, apple.size.ripe);
         pop();
     }
 
@@ -473,8 +487,8 @@ function drawKitchen() {
         //apple
         push();
         noStroke();
-        fill(apple.color);
-        ellipse(apple.x, apple.y, apple.size);
+        fill(apple.color.r, apple.color.g, apple.color.b);
+        ellipse(apple.x, apple.y, apple.size.ripe);
         pop();
     } else {
         //change apples to mini apple pieces
@@ -487,7 +501,7 @@ function drawKitchen() {
             let y = random(-60, 60);
             push();
             noStroke();
-            fill(apple.color);
+            fill(apple.color.r, apple.color.g, apple.color.b);
             ellipse(apple.x + x, apple.y + y, 20);
             pop();
         }
