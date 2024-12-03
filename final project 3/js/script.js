@@ -66,9 +66,6 @@ const tree = {
 //apple
 const apple = {
     // position
-    // x: tree.leaf.x - 140,
-    // y: tree.leaf.y + 150,
-
     y: 250,
     x: 400,
 
@@ -79,13 +76,14 @@ const apple = {
     },
 
 
-    // color Ripe
+    // color Ripe red
     colorRipe: {
         r: 255,
         g: 0,
         b: 0,
     },
 
+    //color apple unripe green
     colorUnripe: {
         r: 141,
         g: 182,
@@ -94,13 +92,15 @@ const apple = {
 
     ripeness: 0,
     growth: 0,
+
     isRotten: false,
     inBasket: false,
     inMixingBowl: false,
     dragging: false,
 
-
     speed: 3,
+
+    stateOfApple: "growing" //growing/ripenning/falling
 
 };
 
@@ -255,11 +255,10 @@ function applePicking() {
     if (apple.ripeness >= 1) {
         moveApple();
         catchApple();
-
     }
 
     //move basket on the x axis
-    tree.basket.x = mouseX;
+    tree.basket.x = mouseX - tree.basket.sizeWidth / 2;
 }
 
 function makeBatter() {
@@ -396,11 +395,19 @@ function growApple() {
 
 // Change color of apple from green to red
 function ripenApple() {
-    apple.ripeness += 0.001;
+    apple.stateOfApple = "ripening";
 
+    apple.ripeness += 0.002;
     apple.colorUnripe.r = map(apple.ripeness, 0, 1, apple.colorUnripe.r, apple.colorRipe.r);
     apple.colorUnripe.g = map(apple.ripeness, 0, 1, apple.colorUnripe.g, apple.colorRipe.g);
     apple.colorUnripe.b = map(apple.ripeness, 0, 1, apple.colorUnripe.b, apple.colorRipe.b);
+
+    if (apple.ripeness >= 0.5) {
+
+        (apple.stateOfApple = "falling");
+
+
+    }
 }
 
 
@@ -458,13 +465,30 @@ function drawTree() {
     pop();
 
     //game notes
-    push();
-    textAlign(CENTER, TOP);
-    textSize(25);
-    fill("white");
-    textStyle(BOLD);
-    text("Catch the apple", canvas.width / 2, canvas.height - 40);
-    pop();
+    if (apple.stateOfApple == "growing") {
+        push();
+        textAlign(CENTER, TOP);
+        textSize(25);
+        fill("white");
+        text("hmm the apple doesn't see ripe yet", canvas.width / 2, canvas.height - 40);
+        pop();
+    }
+    else if (apple.stateOfApple == "ripening") {
+        push();
+        textAlign(CENTER, TOP);
+        textSize(25);
+        fill("white");
+        text("let's wait a little while longer", canvas.width / 2, canvas.height - 40);
+        pop();
+    } else {
+        push();
+        textAlign(CENTER, TOP);
+        textSize(25);
+        fill("white");
+        text("Who knows? One day the apple will fall...", canvas.width / 2, canvas.height - 40);
+        pop();
+    }
+
 
 }
 
