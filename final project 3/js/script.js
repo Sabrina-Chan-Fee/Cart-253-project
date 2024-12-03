@@ -209,10 +209,11 @@ const cake = {
         b: 23,
     },
 
+    state: "raw" //either be raw, baking, willItBurn
 };
 
 // let state = "applePickingInstruction";
-let state = "makeBatter";
+let state = "ovenTime";
 
 let appleSeed = undefined;
 
@@ -304,14 +305,14 @@ function makeBatter() {
 function ovenCake() {
     drawOven();
 
-    //drag toggle left to right 
+    //drag toggle left to right to set to the right temp
     if (toggle.dragging) {
         toggle.x = mouseX;
     }
     // distance between the mouse and the center of the apple
     const distanceFromToggleAndTempGoal = ovenTemperature.temperatureGoal.x - toggle.x;
     //see when mouse is considered overlapping
-    console.log(distanceFromToggleAndTempGoal);
+
     if (distanceFromToggleAndTempGoal < 10 && distanceFromToggleAndTempGoal > -10) {
         setTimeout(() => { toggle.isAtRightTemp = true }, 500);
 
@@ -322,17 +323,18 @@ function ovenCake() {
 
 function bakeCake() {
 
-    cake.bakedness += 0.01;
+    cake.bakedness += 0.0005;
 
-    cake.colorRaw.r = map(cake.bakedness, 0, 1, cake.colorRaw.r, cake.colorCook.r);
-    cake.colorRaw.g = map(cake.bakedness, 0, 1, cake.colorRaw.g, cake.colorCook.g);
-    cake.colorRaw.b = map(cake.bakedness, 0, 1, cake.colorRaw.b, cake.colorCook.b);
+    cake.colorRaw.r = map(cake.bakedness, 0, 100, cake.colorRaw.r, cake.colorCook.r);
+    cake.colorRaw.g = map(cake.bakedness, 0, 100, cake.colorRaw.g, cake.colorCook.g);
+    cake.colorRaw.b = map(cake.bakedness, 0, 100, cake.colorRaw.b, cake.colorCook.b);
 
     if (cake.bakedness >= 1) {
         toggle.dragging = false;
-        // state = "gameOver";
         setTimeout(() => { state = "gameOver" }, 500);
-
+    }
+    else if (cake.bakedness > 0.5) {
+        cake.state = "baking";
     }
 }
 /**
@@ -368,12 +370,9 @@ function mouseReleased() {
     //see when mouse is considered overlapping
     const appleOverlapCakeBatter = (distance <= cakeBatter.size / 2);
 
-
     if (appleOverlapCakeBatter) {
         apple.inMixingBowl = true;
-
     }
-
     toggle.dragging = false;
 
 }
@@ -446,6 +445,7 @@ function ripenApple() {
     if (apple.ripeness >= 0.5) {
         (apple.stateOfApple = "falling");
     }
+
 
 }
 
@@ -675,14 +675,22 @@ function drawOven() {
     rect(toggle.x, toggle.y, toggle.size.width, toggle.size.height);
     pop();
 
-    if (toggle.isAtRightTemp) {
+    if (toggle.isAtRightTemp && cake.state == "raw") {
         //game notes
         push();
         textAlign(CENTER, TOP);
         textSize(25);
         fill("black");
-        textStyle(BOLD);
         text("Now patiently wait for the cake to bake...", canvas.width / 2, canvas.height - 75);
+        pop();
+    }
+    else if (toggle.isAtRightTemp && cake.state == "baking") {
+        //game notes
+        push();
+        textAlign(CENTER, TOP);
+        textSize(25);
+        fill("black");
+        text("I wonder.. will the cake burn ?...", canvas.width / 2, canvas.height - 75);
         pop();
     }
     else {
@@ -691,7 +699,6 @@ function drawOven() {
         textAlign(CENTER, TOP);
         textSize(25);
         fill("black");
-        textStyle(BOLD);
         text("Move red toggle to the right temperature", canvas.width / 2, canvas.height - 75);
         pop();
     }
