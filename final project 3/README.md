@@ -1,12 +1,12 @@
 # Mixing Cake Batter
 Sabrina Chan Fee
 
-## [View the project online](https://sabrina-chan-fee.github.io/Cart-253-project/Art%20Jam/)
+## [View the project online](https://sabrina-chan-fee.github.io/Cart-253-project/final%20project%203/)
 
 ## Description
 Players have to make a apple cake in 3 steps.
 
-First they must patiently wait for the apple to grow and ripen. Then thye must catch the ripe apple that will fall from the tree. 
+First they must patiently wait for the apple to grow and ripen. Then player must catch the ripe apple that will fall from the tree. 
 Then they must add the apple to the cake batter and mix it for a long time. 
 Finaly players must set the oven at the right temperature and paitiently wait for the cake to bake, which will take a very long time.
 
