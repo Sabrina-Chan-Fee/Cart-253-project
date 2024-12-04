@@ -1,7 +1,7 @@
 # Mixing Cake Batter
 Sabrina Chan Fee
 
-## [View the project online](https://sabrina-chan-fee.github.io/Cart-253-project/Art%20Jam/)
+## [View the project online](https://sabrina-chan-fee.github.io/Cart-253-project/final%20project%202/)
 
 ## Description
 This is a cake making game. 
