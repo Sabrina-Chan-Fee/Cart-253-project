@@ -5,13 +5,13 @@ Sabrina Chan Fee
 
 ## Description
 This is a cake making game. 
-First user will have to go pick an apple from the garden.
+First user will have to go catch a ripe apple that will fall from the tree from the garden.
 Next players must add the apple to the cake batter.
-Finaly player must patiently wait for the cake to bake in the oven.
+Finaly player must set the oven to the right temperature and wait for the cake to bake in the oven.
 
 Controls: 
  * - slide mouse left to right to move basket and cath the falling apple
- * - click and drag apple into the cake batter nad move mouse around to mix
+ * - click and drag apple into the cake batter
  * - click and drag with the mouse to move the toggle and set the oven to the right temperature
  
 
